@@ -1,24 +1,33 @@
-const FuelLogList = ({ logs }) => {
+import { useEffect, useState } from "react";
+import axios from "axios";
+import FuelLogList from "./FuelLogList";
+
+const FuelLog = ({ vehicleId }) => {
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const res = await axios.get(`/api/fuel/${vehicleId}?userId=user123`);
+        setLogs(res.data);
+      } catch (err) {
+        console.error("❌ Error fetching logs", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (vehicleId) fetchLogs();
+  }, [vehicleId]);
+
+  if (loading) return <p className="p-4">Loading fuel logs...</p>;
+
   return (
-    <div>
-      <h2 className="font-semibold mb-2">Previous Fuel Logs</h2>
-      {logs.length === 0 ? (
-        <p>No logs yet.</p>
-      ) : (
-        <ul className="space-y-2">
-          {logs.map((log) => (
-            <li key={log._id} className="border p-2 rounded">
-              <div>🧭 Odo: {log.odoReading} km</div>
-              <div>⛽ Fuel: {log.fuelLitres} L</div>
-              <div className="text-sm text-gray-500">
-                {new Date(log.createdAt).toLocaleString()}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="p-4">
+      <FuelLogList logs={logs} />
     </div>
   );
 };
 
-export default FuelLogList;
+export default FuelLog;

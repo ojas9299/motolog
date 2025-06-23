@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
-import VehicleForm from "./components/VehicleForm";
-import { useVehicles } from "./hooks/useVehicles";
-import { useToast } from "./hooks/useToast";
-import Spinner from "./components/ui/Spinner";
-import Toast from "./components/ui/Toast";
+import VehicleForm from "./VehicleForm";
+import { useVehicles } from "../../hooks/useVehicles";
+import { useToast } from "../../hooks/useToast";
+import Spinner from "../ui/Spinner";
+import Toast from "../ui/Toast";
 
 const VehicleList = () => {
   const { user } = useUser();
-  const { vehicles, loading, error, createVehicle, updateVehicle, deleteVehicle } = useVehicles(user?.id);
+  const {
+    vehicles,
+    loading,
+    error,
+    createVehicle,
+    updateVehicle,
+    deleteVehicle,
+  } = useVehicles(user?.id);
   const { toast, showSuccess, showError, hideToast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
@@ -17,8 +24,12 @@ const VehicleList = () => {
   const handleAddVehicle = async (vehicleData) => {
     try {
       const ownerName = user.fullName || user.firstName || user.username || "";
-      const result = await createVehicle({ ...vehicleData, userId: user.id, owner: ownerName });
-      
+      const result = await createVehicle({
+        ...vehicleData,
+        userId: user.id,
+        owner: ownerName,
+      });
+
       if (result.success) {
         showSuccess("Vehicle added successfully!");
         setIsAdding(false);
@@ -33,8 +44,12 @@ const VehicleList = () => {
   const handleUpdateVehicle = async (vehicleData) => {
     try {
       const ownerName = user.fullName || user.firstName || user.username || "";
-      const result = await updateVehicle(editingVehicle._id, { ...vehicleData, userId: user.id, owner: ownerName });
-      
+      const result = await updateVehicle(editingVehicle._id, {
+        ...vehicleData,
+        userId: user.id,
+        owner: ownerName,
+      });
+
       if (result.success) {
         showSuccess("Vehicle updated successfully!");
         setEditingVehicle(null);
@@ -53,7 +68,7 @@ const VehicleList = () => {
 
     try {
       const result = await deleteVehicle(id);
-      
+
       if (result.success) {
         showSuccess("Vehicle deleted successfully!");
       } else {
@@ -70,7 +85,10 @@ const VehicleList = () => {
     return (
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">Add New Vehicle</h2>
-        <VehicleForm onSubmit={handleAddVehicle} onCancel={() => setIsAdding(false)} />
+        <VehicleForm
+          onSubmit={handleAddVehicle}
+          onCancel={() => setIsAdding(false)}
+        />
       </div>
     );
   }
@@ -79,10 +97,10 @@ const VehicleList = () => {
     return (
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">Edit Vehicle</h2>
-        <VehicleForm 
-          vehicle={editingVehicle} 
-          onSubmit={handleUpdateVehicle} 
-          onCancel={() => setEditingVehicle(null)} 
+        <VehicleForm
+          vehicle={editingVehicle}
+          onSubmit={handleUpdateVehicle}
+          onCancel={() => setEditingVehicle(null)}
         />
       </div>
     );
@@ -90,13 +108,13 @@ const VehicleList = () => {
 
   return (
     <>
-      <Toast 
-        message={toast.message} 
-        type={toast.type} 
-        visible={toast.visible} 
-        onClose={hideToast} 
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        visible={toast.visible}
+        onClose={hideToast}
       />
-      
+
       <div className="p-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-indigo-700">Your Vehicles</h2>
@@ -115,12 +133,14 @@ const VehicleList = () => {
             Error: {error}
           </div>
         )}
-        
+
         {loading && <Spinner size="lg" className="my-8" />}
 
         {!loading && vehicles.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No vehicles found. Add your first vehicle!</p>
+            <p className="text-gray-500 text-lg">
+              No vehicles found. Add your first vehicle!
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -141,14 +161,15 @@ const VehicleList = () => {
                       className="w-full h-48 object-cover rounded-lg mb-4 border"
                     />
                   )}
-                  
+
                   <h3 className="text-xl font-bold text-indigo-700 mb-2">
                     {vehicle.brand} {vehicle.model}
                   </h3>
-                  
+
                   <div className="space-y-2 text-sm">
                     <p className="text-gray-700">
-                      <span className="font-medium">Owner:</span> {vehicle.owner}
+                      <span className="font-medium">Owner:</span>{" "}
+                      {vehicle.owner}
                     </p>
                     <p className="text-gray-600">
                       <span className="font-medium">Type:</span> {vehicle.type}
@@ -157,18 +178,21 @@ const VehicleList = () => {
                       <span className="font-medium">Year:</span> {vehicle.year}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-medium">Registration:</span> {vehicle.registrationNumber}
+                      <span className="font-medium">Registration:</span>{" "}
+                      {vehicle.registrationNumber}
                     </p>
                     <p className="text-gray-600">
-                      <span className="font-medium">Kilometers:</span> {vehicle.kilometersDriven?.toLocaleString() || '0'}
+                      <span className="font-medium">Kilometers:</span>{" "}
+                      {vehicle.kilometersDriven?.toLocaleString() || "0"}
                     </p>
                     {vehicle.color && (
                       <p className="text-gray-600">
-                        <span className="font-medium">Color:</span> {vehicle.color}
+                        <span className="font-medium">Color:</span>{" "}
+                        {vehicle.color}
                       </p>
                     )}
                   </div>
-                  
+
                   <div className="flex space-x-2 mt-4">
                     <motion.button
                       whileHover={{ scale: 1.05 }}

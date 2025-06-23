@@ -17,17 +17,19 @@ exports.createFuelLog = async (req, res) => {
     res.status(201).json(newLog);
   } catch (err) {
     console.error("❌ Fuel log error:", err); // ADD THIS
-    res
-      .status(500)
-      .json({
-        error: "Failed to create fuel log",
-        details: err.message || err,
-      });
+    res.status(500).json({
+      error: "Failed to create fuel log",
+      details: err.message || err,
+    });
   }
 };
 
 // Get all fuel logs for a vehicle
 exports.getFuelLogsByVehicle = async (req, res) => {
+  console.log(
+    "👉 getFuelLogsByVehicle hit with vehicleId:",
+    req.params.vehicleId
+  );
   try {
     const { userId } = req.auth;
     const { vehicleId } = req.params;
@@ -43,6 +45,8 @@ exports.getFuelLogsByVehicle = async (req, res) => {
 
 // Get a single fuel log by ID
 exports.getFuelLogById = async (req, res) => {
+  console.log("📥 getFuelLogById hit with ID:", req.params.id);
+
   try {
     const { id } = req.params;
     const log = await FuelLog.findById(id);

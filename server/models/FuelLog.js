@@ -20,10 +20,6 @@ const FuelLogSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
-  isFullTank: {
-    type: Boolean,
-    required: true,
-  },
   createdAt: {
     type: Date,
     default: Date.now,
