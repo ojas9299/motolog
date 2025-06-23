@@ -1,24 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react"; // ✅ Get userId from Clerk
 
-const FuelForm = ({ vehicleId, onLogSaved }) => {
+const FuelForm = ({ vehicleId, onLogSaved, initialOdo = "", initialFuel = "", editLogId, onCancel }) => {
   const { user } = useUser(); // ✅ Access Clerk user object
 
-  const [odoReading, setOdoReading] = useState("");
-  const [fuelLitres, setFuelLitres] = useState("");
+  const [odoReading, setOdoReading] = useState(initialOdo);
+  const [fuelLitres, setFuelLitres] = useState(initialFuel);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setOdoReading(initialOdo);
+    setFuelLitres(initialFuel);
+  }, [initialOdo, initialFuel, editLogId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post("/api/fuel", {
-        userId: user?.id, // ✅ Manually pass userId
-        vehicleId,
-        odoReading: Number(odoReading),
-        fuelLitres: Number(fuelLitres),
-      });
+      if (editLogId) {
+        // Update existing log
+        await axios.put(`/api/fuel/log/${editLogId}`, {
+          odoReading: Number(odoReading),
+          fuelLitres: Number(fuelLitres),
+        });
+      } else {
+        // Create new log
+        await axios.post("/api/fuel", {
+          userId: user?.id, // ✅ Manually pass userId
+          vehicleId,
+          odoReading: Number(odoReading),
+          fuelLitres: Number(fuelLitres),
+        });
+      }
 
       setOdoReading("");
       setFuelLitres("");
@@ -32,7 +46,7 @@ const FuelForm = ({ vehicleId, onLogSaved }) => {
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
-      <h2 className="font-bold mb-2">Add Fuel Log</h2>
+      <h2 className="font-bold mb-2">{editLogId ? "Edit Fuel Log" : "Add Fuel Log"}</h2>
 
       {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
@@ -54,9 +68,15 @@ const FuelForm = ({ vehicleId, onLogSaved }) => {
         required
       />
 
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2">
-        Save Log
+      <button type="submit" className="bg-blue-600 text-white px-4 py-2 mr-2">
+        {editLogId ? "Update Log" : "Save Log"}
       </button>
+
+      {onCancel && (
+        <button type="button" onClick={onCancel} className="bg-gray-400 text-white px-4 py-2">
+          Cancel
+        </button>
+      )}
     </form>
   );
 };

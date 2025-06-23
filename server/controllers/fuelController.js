@@ -1,11 +1,11 @@
 // controllers/fuelController.js
-const FuelLog = require("../models/fuelLog");
+const FuelLog = require("../models/FuelLog");
 
 // Create new fuel log
 exports.createFuelLog = async (req, res) => {
   try {
-    const { userId } = req.auth; // may be undefined if no auth
-    const { vehicleId, odoReading, fuelLitres } = req.body;
+    // Take userId from req.body instead of req.auth
+    const { userId, vehicleId, odoReading, fuelLitres } = req.body;
 
     const newLog = await FuelLog.create({
       userId,
@@ -16,7 +16,7 @@ exports.createFuelLog = async (req, res) => {
 
     res.status(201).json(newLog);
   } catch (err) {
-    console.error("❌ Fuel log error:", err); // ADD THIS
+    console.error("❌ Fuel log error:", err);
     res.status(500).json({
       error: "Failed to create fuel log",
       details: err.message || err,
@@ -31,13 +31,30 @@ exports.getFuelLogsByVehicle = async (req, res) => {
     req.params.vehicleId
   );
   try {
-    const { userId } = req.auth;
+    // Take userId from query or body instead of req.auth
+    const userId = req.query.userId || req.body.userId;
     const { vehicleId } = req.params;
 
-    const logs = await FuelLog.find({ userId, vehicleId }).sort({
-      createdAt: -1,
+    let logs = await FuelLog.find({ userId, vehicleId }).sort({
+      createdAt: 1, // sort oldest to newest for mileage calc
     });
-    res.json(logs);
+
+    // Calculate mileage for each log (except the first)
+    logs = logs.map((log, idx, arr) => {
+      let mileage = null;
+      if (idx > 0) {
+        const prev = arr[idx - 1];
+        const distance = log.odoReading - prev.odoReading;
+        if (log.fuelLitres > 0 && distance > 0) {
+          mileage = distance / log.fuelLitres;
+        }
+      }
+      // Convert to object and add mileage
+      return { ...log.toObject(), mileage };
+    });
+
+    // Return newest first (reverse)
+    res.json(logs.reverse());
   } catch (err) {
     res.status(500).json({ error: "Failed to get fuel logs", details: err });
   }

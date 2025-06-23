@@ -21,6 +21,8 @@ import MyTrips from "./components/trip/MyTrips";
 import MyFuel from "./components/fuel/MyFuel";
 import FuelForm from "./components/fuel/FuelForm";
 import FuelLog from "./components/fuel/FuelLog";
+import VehicleDetail from "./components/vehicle/VehicleDetail";
+import Navbar from "./components/ui/Navbar";
 
 // Wrapper to extract route param and pass callback
 const FuelFormWrapper = () => {
@@ -57,50 +59,45 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("vehicles");
 
   return (
-    <Routes>
-      {/* Main Dashboard with Tabs */}
-      <Route
-        path="/"
-        element={
-          <>
-            {/* Header */}
-            <header className="p-4 flex justify-between items-center bg-white shadow">
-              <div className="font-bold text-xl">Motolog</div>
+    <>
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Routes>
+        {/* Main Dashboard with Tabs */}
+        <Route
+          path="/"
+          element={
+            <>
+              {/* Signed-in layout */}
               <SignedIn>
-                <UserButton />
+                <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                  <MyVehicles activeTab={activeTab} />
+                  <MyTrips activeTab={activeTab} />
+                  <MyFuel activeTab={activeTab} />
+                </Sidebar>
               </SignedIn>
+
+              {/* Guest layout */}
               <SignedOut>
-                <SignInButton />
+                <div className="flex flex-col items-center justify-center min-h-screen">
+                  <h1 className="text-3xl font-bold mb-4">Welcome to Motolog</h1>
+                  <SignInButton mode="modal">
+                    <button className="px-6 py-3 bg-indigo-600 text-white rounded-lg text-lg hover:bg-indigo-700 transition">
+                      Sign In
+                    </button>
+                  </SignInButton>
+                </div>
               </SignedOut>
-            </header>
+            </>
+          }
+        />
 
-            {/* Signed-in layout */}
-            <SignedIn>
-              <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-                <MyVehicles activeTab={activeTab} />
-                <MyTrips activeTab={activeTab} />
-                <MyFuel activeTab={activeTab} />
-              </Sidebar>
-            </SignedIn>
+        {/* Fuel Routes */}
+        <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
+        <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
 
-            {/* Guest layout */}
-            <SignedOut>
-              <div className="flex flex-col items-center justify-center min-h-screen">
-                <h1 className="text-3xl font-bold mb-4">Welcome to Motolog</h1>
-                <SignInButton mode="modal">
-                  <button className="px-6 py-3 bg-indigo-600 text-white rounded-lg text-lg hover:bg-indigo-700 transition">
-                    Sign In
-                  </button>
-                </SignInButton>
-              </div>
-            </SignedOut>
-          </>
-        }
-      />
-
-      {/* Fuel Routes */}
-      <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
-      <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
-    </Routes>
+        {/* Vehicle Routes */}
+        <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
+      </Routes>
+    </>
   );
 }

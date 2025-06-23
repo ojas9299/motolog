@@ -37,6 +37,19 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get a single vehicle by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+    if (!vehicle) {
+      return res.status(404).json({ error: "Vehicle not found" });
+    }
+    res.json(vehicle);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch vehicle" });
+  }
+});
+
 // Add a new vehicle (requires userId)
 router.post("/", async (req, res) => {
   try {
