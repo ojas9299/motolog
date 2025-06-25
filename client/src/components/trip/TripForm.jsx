@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const TripForm = ({ vehicles, onSubmit, onCancel }) => {
+const TripForm = ({ vehicles, onSubmit, onCancel, ...editTrip }) => {
   const [formData, setFormData] = useState({
     vehicleId: vehicles[0]?._id || "",
     startLocation: "",
@@ -11,6 +11,22 @@ const TripForm = ({ vehicles, onSubmit, onCancel }) => {
     description: "",
     rating: ""
   });
+
+  // Autofill form fields when editing
+  useEffect(() => {
+    if (editTrip && Object.keys(editTrip).length > 0) {
+      setFormData({
+        vehicleId: editTrip.vehicleId || vehicles[0]?._id || "",
+        startLocation: editTrip.startLocation || "",
+        endLocation: editTrip.endLocation || "",
+        startTime: editTrip.startTime ? new Date(editTrip.startTime).toISOString().slice(0, 16) : "",
+        endTime: editTrip.endTime ? new Date(editTrip.endTime).toISOString().slice(0, 16) : "",
+        tripImages: editTrip.tripImages && editTrip.tripImages.length > 0 ? editTrip.tripImages : [""],
+        description: editTrip.description || "",
+        rating: editTrip.rating || ""
+      });
+    }
+  }, [editTrip, vehicles]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

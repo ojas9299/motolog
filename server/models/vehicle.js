@@ -29,6 +29,7 @@ const vehicleSchema = new mongoose.Schema(
     imageUrl: String, // Optional – for image upload
     userId: { type: String, required: true }, // Clerk/Firebase UID, required
     owner: { type: String, required: true }, // Owner's name (Clerk user's name)
+    verified: { type: Boolean, default: false }, // Permanently store verification status
   },
   { timestamps: true }
 );

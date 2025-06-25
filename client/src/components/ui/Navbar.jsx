@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { UserButton } from "@clerk/clerk-react";
 
 const NAV_LINKS = [
   { name: "Vehicles", tab: "vehicles" },
@@ -14,20 +15,25 @@ const Navbar = ({ activeTab, setActiveTab }) => {
     return localStorage.getItem("motolog-dark-mode") === "true";
   });
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    localStorage.setItem("motolog-dark-mode", darkMode);
-  }, [darkMode]);
-
   const handleBack = () => {
     navigate(-1);
   };
 
   const isHome = location.pathname === "/";
+
+  //   useEffect(() => {
+  //     // Do not apply any dark/light mode logic on homepage
+  //     if (location.pathname === "/") {
+  //       return;
+  //     }
+  //     // Only apply dark mode on other routes
+  //     if (darkMode) {
+  //       document.documentElement.classList.add("dark");
+  //     } else {
+  //       document.documentElement.classList.remove("dark");
+  //     }
+  //     localStorage.setItem("motolog-dark-mode", darkMode);
+  //   }, [darkMode, location.pathname]);
 
   return (
     <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow flex items-center justify-between px-4 py-2">
@@ -69,12 +75,22 @@ const Navbar = ({ activeTab, setActiveTab }) => {
           </button>
         ))}
         <button
+          onClick={() => navigate("/analytics")}
+          className="flex items-center gap-1 px-3 py-1 rounded text-indigo-700 dark:text-indigo-300 font-semibold hover:bg-indigo-50 dark:hover:bg-gray-800 transition border border-indigo-200 dark:border-indigo-700"
+          title="Analytics & Graphs"
+        >
+          <span role="img" aria-label="chart">📊</span> Analytics
+        </button>
+        <button
           onClick={() => setDarkMode((d) => !d)}
           className="ml-4 text-xl px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition"
           title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
           {darkMode ? "🌙" : "☀️"}
         </button>
+        <div className="ml-4">
+          <UserButton afterSignOutUrl="/" />
+        </div>
       </div>
     </nav>
   );

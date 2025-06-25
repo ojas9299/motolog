@@ -12,7 +12,9 @@ import {
   Routes,
   Route,
   useParams,
+  useLocation,
 } from "react-router-dom";
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 // Components & Pages
 import Sidebar from "./components/Sidebar";
@@ -23,6 +25,8 @@ import FuelForm from "./components/fuel/FuelForm";
 import FuelLog from "./components/fuel/FuelLog";
 import VehicleDetail from "./components/vehicle/VehicleDetail";
 import Navbar from "./components/ui/Navbar";
+import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
+import Homepage from "./components/Homepage";
 
 // Wrapper to extract route param and pass callback
 const FuelFormWrapper = () => {
@@ -57,47 +61,51 @@ const MyVehicles = ({ activeTab }) =>
 export default function App() {
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState("vehicles");
+  const location = useLocation();
 
   return (
-    <>
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <Routes>
-        {/* Main Dashboard with Tabs */}
-        <Route
-          path="/"
-          element={
-            <>
-              {/* Signed-in layout */}
-              <SignedIn>
-                <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-                  <MyVehicles activeTab={activeTab} />
-                  <MyTrips activeTab={activeTab} />
-                  <MyFuel activeTab={activeTab} />
-                </Sidebar>
-              </SignedIn>
-
-              {/* Guest layout */}
-              <SignedOut>
-                <div className="flex flex-col items-center justify-center min-h-screen">
-                  <h1 className="text-3xl font-bold mb-4">Welcome to Motolog</h1>
-                  <SignInButton mode="modal">
-                    <button className="px-6 py-3 bg-indigo-600 text-white rounded-lg text-lg hover:bg-indigo-700 transition">
-                      Sign In
-                    </button>
-                  </SignInButton>
-                </div>
-              </SignedOut>
-            </>
-          }
-        />
-
-        {/* Fuel Routes */}
-        <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
-        <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
-
-        {/* Vehicle Routes */}
-        <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
-      </Routes>
-    </>
+    <Tooltip.Provider>
+      <>
+        {(location.pathname !== "/" || user) && (
+          <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+        )}
+        <Routes>
+          {/* Homepage */}
+          <Route
+            path="/"
+            element={
+              <>
+                <SignedIn>
+                  <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                    <MyVehicles activeTab={activeTab} />
+                    <MyTrips activeTab={activeTab} />
+                    <MyFuel activeTab={activeTab} />
+                  </Sidebar>
+                </SignedIn>
+                <SignedOut>
+                  <Homepage />
+                </SignedOut>
+              </>
+            }
+          />
+          {/* Vehicles Route */}
+          <Route
+            path="/vehicles"
+            element={
+              <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                <MyVehicles activeTab="vehicles" />
+              </Sidebar>
+            }
+          />
+          {/* Analytics Route */}
+          <Route path="/analytics" element={<AnalyticsDashboard />} />
+          {/* Fuel Routes */}
+          <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
+          <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
+          {/* Vehicle Routes */}
+          <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
+        </Routes>
+      </>
+    </Tooltip.Provider>
   );
 }

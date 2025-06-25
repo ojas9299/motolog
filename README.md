@@ -141,6 +141,22 @@ client/src/
    npm run dev
    ```
 
+## 🧪 Mock Data Generation
+
+To quickly populate your database with sample vehicles, trips, and fuel logs for testing/demo purposes, you can use the provided mock data script.
+
+### Usage
+
+1. Make sure your MongoDB server is running and your environment variables are set (see Installation above).
+2. From the root of the project, run:
+   ```bash
+   cd server
+   node scripts/mockData.js
+   ```
+   This will connect to your MongoDB instance, clear all existing vehicles, trips, and fuel logs, and insert mock data for development/testing.
+
+> **Warning:** This script will **delete all existing vehicle, trip, and fuel log data** in your database. Use only in development or with a test database!
+
 ## 🔧 API Endpoints
 
 ### Trips

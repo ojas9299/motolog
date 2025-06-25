@@ -2,6 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const Vehicle = require("../models/Vehicle");
+const axios = require("axios");
+const FuelLog = require("../models/FuelLog");
+const Trip = require("../models/Trip");
+
 
 // Get all vehicles (public)
 router.get("/", async (req, res) => {
@@ -126,6 +130,10 @@ router.put("/:id", async (req, res) => {
 // Delete a vehicle (public)
 router.delete("/:id", async (req, res) => {
   try {
+    // Delete all related fuel logs and trips first
+    await FuelLog.deleteMany({ vehicleId: req.params.id });
+    await Trip.deleteMany({ vehicleId: req.params.id });
+
     const deleted = await Vehicle.findOneAndDelete({
       _id: req.params.id,
     });
@@ -134,7 +142,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ error: "Vehicle not found" });
     }
 
-    res.json({ message: "Vehicle deleted successfully" });
+    res.json({ message: "Vehicle and all related data deleted successfully" });
   } catch (err) {
     console.error("Error deleting vehicle:", err);
     res.status(500).json({ error: "Failed to delete vehicle" });

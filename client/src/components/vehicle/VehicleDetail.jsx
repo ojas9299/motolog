@@ -4,6 +4,9 @@ import axios from "axios";
 import Spinner from "../ui/Spinner";
 import FuelLogList from "../fuel/FuelLogList";
 import { useUser } from "@clerk/clerk-react";
+import { Bar, Line } from "react-chartjs-2";
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
+import ReactECharts from "echarts-for-react";
 
 const API_NINJAS_KEY = "8s0Wvvk7bRewkDb4/sKLhA==qVEIlg8bkbJD5NgW";
 
@@ -22,6 +25,17 @@ const fetchVehicleSpecs = async (brand, model) => {
     return { verified: false, specs: null };
   }
 };
+
+const fetchVehicleSpecsMemo = (() => {
+  const cache = {};
+  return async (brand, model) => {
+    const key = `${brand.toLowerCase()}|${model.toLowerCase()}`;
+    if (cache[key]) return cache[key];
+    const result = await fetchVehicleSpecs(brand, model);
+    cache[key] = result;
+    return result;
+  };
+})();
 
 const VehicleDetail = () => {
   const { vehicleId } = useParams();
@@ -58,9 +72,20 @@ const VehicleDetail = () => {
     const fetchSpecs = async () => {
       setSpecsLoading(true);
       if (vehicle && vehicle.brand && vehicle.model) {
-        const { verified, specs } = await fetchVehicleSpecs(vehicle.brand, vehicle.model);
-        setSpecs(specs);
-        setVerified(verified);
+        if (vehicle.verified) {
+          setVerified(true);
+          // Always show specs, even if already verified
+          let specsResult = await fetchVehicleSpecsMemo(vehicle.brand, vehicle.model);
+          setSpecs(specsResult.specs);
+        } else {
+          const { verified: isVerified, specs } = await fetchVehicleSpecsMemo(vehicle.brand, vehicle.model);
+          setSpecs(specs);
+          setVerified(isVerified);
+          // If verified, update backend
+          if (isVerified) {
+            await axios.put(`/api/vehicle/${vehicle._id}`, { ...vehicle, verified: true });
+          }
+        }
       }
       setSpecsLoading(false);
     };
@@ -69,10 +94,11 @@ const VehicleDetail = () => {
 
   // Fetch trips for this vehicle
   useEffect(() => {
+    if (!user?.id || !vehicleId) return;
     const fetchTrips = async () => {
       setTripsLoading(true);
       try {
-        const res = await axios.get(`/api/trip?userId=${user?.id}&vehicleId=${vehicleId}`);
+        const res = await axios.get(`/api/trip?userId=${user.id}&vehicleId=${vehicleId}`);
         setTrips(res.data.trips || []);
       } catch (err) {
         setTrips([]);
@@ -80,7 +106,7 @@ const VehicleDetail = () => {
         setTripsLoading(false);
       }
     };
-    if (user?.id && vehicleId) fetchTrips();
+    fetchTrips();
   }, [user, vehicleId]);
 
   // Fetch fuel logs for this vehicle
@@ -98,6 +124,44 @@ const VehicleDetail = () => {
     };
     if (user?.id && vehicleId) fetchFuelLogs();
   }, [user, vehicleId]);
+
+  // Prepare data for charts for this vehicle
+  const fuelUpDates = fuelLogs.map(log => log.date || log.createdAt);
+  const fuelAmounts = fuelLogs.map(log => log.fuelLitres || log.fuel || 0);
+  const odometerReadings = fuelLogs.map(log => log.odoReading || log.odometer || 0);
+  const mileage = fuelLogs.map(log => log.mileage || (log.odoReading && log.fuelLitres ? (log.odoReading / log.fuelLitres).toFixed(2) : null));
+
+  // Chart.js Bar: Fuel-ups over time
+  const fuelBarData = {
+    labels: fuelUpDates,
+    datasets: [
+      {
+        label: "Fuel-ups (Litres)",
+        data: fuelAmounts,
+        backgroundColor: "#6366f1",
+      },
+    ],
+  };
+
+  // Chart.js Line: Odometer over time
+  const odoLineData = {
+    labels: fuelUpDates,
+    datasets: [
+      {
+        label: "Odometer Reading",
+        data: odometerReadings,
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16,185,129,0.2)",
+        fill: true,
+      },
+    ],
+  };
+
+  // Recharts Area: Mileage trend
+  const mileageAreaData = fuelLogs.map((log, i) => ({
+    date: fuelUpDates[i],
+    mileage: Number(mileage[i]) || 0,
+  }));
 
   if (vehicleLoading) return <div className="flex justify-center items-center h-64"><Spinner size="lg" /></div>;
   if (!vehicle) return <div className="p-8 text-center text-red-600">Vehicle not found.</div>;
@@ -192,6 +256,36 @@ const VehicleDetail = () => {
         ) : (
           <FuelLogList logs={fuelLogs} />
         )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-xl font-bold mb-4">Fuel-ups Over Time</h2>
+          <Bar data={fuelBarData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+        </div>
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-xl font-bold mb-4">Odometer Readings Over Time</h2>
+          <Line data={odoLineData} options={{ responsive: true }} />
+        </div>
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-xl font-bold mb-4">Mileage Trend</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={mileageAreaData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorMileage" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="date" />
+              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Tooltip />
+              <Legend />
+              <Area type="monotone" dataKey="mileage" stroke="#6366f1" fillOpacity={1} fill="url(#colorMileage)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

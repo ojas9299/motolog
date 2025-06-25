@@ -26,6 +26,10 @@ const MyTrips = ({ activeTab }) => {
 
   if (activeTab !== "trips") return null;
 
+  // Filter out trips for deleted vehicles
+  const validVehicleIds = new Set(vehicles.map(v => v._id));
+  const filteredTrips = trips.filter(trip => validVehicleIds.has(trip.vehicleId));
+
   const handleTripSubmit = async (tripData) => {
     try {
       const vehicle = vehicles.find((v) => v._id === tripData.vehicleId);
@@ -144,7 +148,7 @@ const MyTrips = ({ activeTab }) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <AnimatePresence>
-                    {trips.map((trip) => (
+                    {filteredTrips.map((trip) => (
                       <TripCard
                         key={trip._id}
                         trip={trip}

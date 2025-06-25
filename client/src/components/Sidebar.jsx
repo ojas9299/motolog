@@ -1,9 +1,11 @@
 // components/Sidebar.jsx
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ setActiveTab, activeTab, children }) => {
   const tabs = ["vehicles", "trips", "fuel"];
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="flex">
@@ -43,6 +45,15 @@ const Sidebar = ({ setActiveTab, activeTab, children }) => {
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
             ))}
+            {/* Analytics Button */}
+            {open && (
+              <button
+                onClick={() => navigate("/analytics")}
+                className="block w-full text-left px-4 py-2 rounded-lg mb-2 transition font-medium flex items-center gap-2 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-gray-800 border border-indigo-200 dark:border-indigo-700"
+              >
+                <span role="img" aria-label="chart">📊</span> Analytics
+              </button>
+            )}
           </div>
         </nav>
       </div>
