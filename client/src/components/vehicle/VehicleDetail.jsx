@@ -11,6 +11,7 @@ import { useVehicles } from "../../hooks/useVehicles";
 import VehicleForm from "./VehicleForm";
 import { Button } from "../ui/Button";
 import { Edit, Trash2 } from 'lucide-react';
+import ImageModal from "../ui/ImageModal";
 
 const API_NINJAS_KEY = "8s0Wvvk7bRewkDb4/sKLhA==qVEIlg8bkbJD5NgW";
 
@@ -58,6 +59,8 @@ const VehicleDetail = () => {
   const { updateVehicle, deleteVehicle } = useVehicles(user?.id);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalIdx, setModalIdx] = useState(0);
 
   // Fetch vehicle from backend
   useEffect(() => {
@@ -220,13 +223,14 @@ const VehicleDetail = () => {
                 key={idx}
                 src={img}
                 alt={`Vehicle ${idx + 1}`}
-                className="object-cover w-full h-40 md:h-48 rounded-xl border shadow-sm"
+                className="object-cover w-full h-40 md:h-48 rounded-xl border shadow-sm cursor-pointer"
                 style={{ aspectRatio: '4/3' }}
+                onClick={() => { setModalIdx(idx); setModalOpen(true); }}
               />
             ))}
           </div>
         ) : vehicle.imageUrl ? (
-          <img src={vehicle.imageUrl} alt="Vehicle" className="w-full md:w-64 h-48 object-cover rounded-xl border" />
+          <img src={vehicle.imageUrl} alt="Vehicle" className="w-full md:w-64 h-48 object-cover rounded-xl border cursor-pointer" onClick={() => { setModalIdx(0); setModalOpen(true); }} />
         ) : null}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -249,7 +253,7 @@ const VehicleDetail = () => {
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">Verified Specs {specsLoading && <Spinner size="sm" />}</h2>
           {specs ? (
             <div>
-              <div className="flex flex-row flex-wrap gap-x-8 gap-y-2 overflow-x-auto pb-2">
+              <div className={`flex flex-row flex-wrap gap-x-8 gap-y-2 overflow-x-auto pb-2 ${showAllSpecs ? 'max-h-56 overflow-y-auto' : ''}`}>
                 {Object.entries(specs)
                   .filter(([key, value]) => value !== null && value !== undefined && value !== "")
                   .slice(0, showAllSpecs ? undefined : 6)
@@ -346,6 +350,14 @@ const VehicleDetail = () => {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {modalOpen && (
+        <ImageModal
+          images={vehicle.vehicleImages && vehicle.vehicleImages.length > 0 ? vehicle.vehicleImages : [vehicle.imageUrl]}
+          startIndex={modalIdx}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

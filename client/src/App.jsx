@@ -27,6 +27,7 @@ import VehicleDetail from "./components/vehicle/VehicleDetail";
 import Navbar from "./components/ui/Navbar";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
 import Homepage from "./components/Homepage";
+import RideboardList from "./components/rideboard/RideboardList";
 
 // Wrapper to extract route param and pass callback
 const FuelFormWrapper = () => {
@@ -104,6 +105,12 @@ export default function App() {
           <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
           {/* Vehicle Routes */}
           <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
+          {/* Rideboard Route */}
+          <Route path="/rideboard" element={
+            <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+              <RideboardList />
+            </Sidebar>
+          } />
         </Routes>
       </>
     </Tooltip.Provider>

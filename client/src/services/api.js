@@ -153,8 +153,57 @@ export const authAPI = {
   }),
 };
 
+// Rideboard API methods
+export const rideboardAPI = {
+  /**
+   * Toggle like for a public trip
+   * @param {string} tripId - Trip ID
+   * @param {string} userId - User ID
+   * @returns {Promise} Like result
+   */
+  toggleLike: (tripId, userId) => apiRequest(`/rideboard/${tripId}/like`, {
+    method: 'POST',
+    body: JSON.stringify({ userId }),
+  }),
+  /**
+   * Toggle save for a public trip
+   */
+  toggleSave: (tripId, userId) => apiRequest(`/rideboard/${tripId}/save`, {
+    method: 'POST',
+    body: JSON.stringify({ userId }),
+  }),
+  /**
+   * Toggle join for a public trip
+   */
+  toggleJoin: (tripId, userId) => apiRequest(`/rideboard/${tripId}/join`, {
+    method: 'POST',
+    body: JSON.stringify({ userId }),
+  }),
+  /**
+   * Add a comment to a public trip
+   */
+  addComment: (tripId, userId, text, displayName) => apiRequest(`/rideboard/${tripId}/comment`, {
+    method: 'POST',
+    body: JSON.stringify({ userId, displayName, text }),
+  }),
+  /**
+   * Get all public (Rideboard) trips
+   * @returns {Promise} Public trips data
+   */
+  getPublicTrips: () => apiRequest('/rideboard'),
+  /**
+   * Delete a comment from a public trip
+   */
+  deleteComment: (tripId, commentId, userId) => apiRequest(`/rideboard/${tripId}/comment/${commentId}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId }),
+  }),
+};
+
 export default {
   trip: tripAPI,
   vehicle: vehicleAPI,
   auth: authAPI,
+  rideboard: rideboardAPI,
 }; 

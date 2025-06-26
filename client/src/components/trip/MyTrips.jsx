@@ -33,6 +33,10 @@ const MyTrips = ({ activeTab }) => {
   const handleTripSubmit = async (tripData) => {
     try {
       const vehicle = vehicles.find((v) => v._id === tripData.vehicleId);
+      if (!vehicle) {
+        showError("Please select a valid vehicle.");
+        return;
+      }
       const enrichedTripData = {
         ...tripData,
         userId: user.id,
@@ -43,8 +47,10 @@ const MyTrips = ({ activeTab }) => {
         registrationNumber: vehicle?.registrationNumber,
         vehicleImage: vehicle?.imageUrl,
         type: vehicle?.type,
+        startTime: tripData.startTime ? new Date(tripData.startTime).toISOString() : undefined,
+        endTime: tripData.endTime ? new Date(tripData.endTime).toISOString() : undefined,
       };
-
+      console.log('Submitting trip:', enrichedTripData);
       const result = editingTrip
         ? await updateTrip(editingTrip._id, enrichedTripData)
         : await createTrip(enrichedTripData);
@@ -58,7 +64,7 @@ const MyTrips = ({ activeTab }) => {
         setShowForm(false);
         setEditingTrip(null);
       } else {
-        showError(result.error || "Failed to save trip");
+        showError(result.error || (result.details && result.details.join(', ')) || "Failed to save trip");
       }
     } catch (err) {
       showError(err.message || "Failed to save trip");
@@ -147,7 +153,7 @@ const MyTrips = ({ activeTab }) => {
 
                 {loading && <Spinner size="lg" className="my-8" />}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
                   <AnimatePresence>
                     {filteredTrips.map((trip) => (
                       <TripCard

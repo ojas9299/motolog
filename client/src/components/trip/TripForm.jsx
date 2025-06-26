@@ -19,6 +19,7 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
 
   // Autofill form fields when editing, but only when the trip changes
   const lastEditId = useRef();
+  const [sharePublic, setSharePublic] = useState(editTrip?.visibility === "public");
   useEffect(() => {
     if (editTrip && editTrip._id) {
       if (lastEditId.current !== editTrip._id) {
@@ -33,6 +34,7 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
           rating: editTrip.rating || ""
         });
         lastEditId.current = editTrip._id;
+        setSharePublic(editTrip.visibility === "public");
       }
     } else if (!editTrip || !editTrip._id) {
       setFormData({
@@ -46,6 +48,7 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
         rating: ""
       });
       lastEditId.current = undefined;
+      setSharePublic(false);
     }
   }, [editTrip?._id, vehicles]);
 
@@ -111,6 +114,8 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
       ...formData,
       rating: formData.rating ? Number(formData.rating) : undefined,
       tripImages: formData.tripImages.filter((img) => img).slice(0, 6),
+      visibility: sharePublic ? "public" : "private",
+      sharedAt: sharePublic ? new Date().toISOString() : undefined,
     })).finally(() => setIsSubmitting(false));
   };
 
@@ -218,6 +223,17 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
           placeholder="Rate your trip (1-5)"
           disabled={isSubmitting}
         />
+      </ShadcnFormField>
+      <ShadcnFormField label="Share to Rideboard (public)">
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={sharePublic}
+            onChange={e => setSharePublic(e.target.checked)}
+            disabled={isSubmitting}
+          />
+          <span>Share this trip to Rideboard (public)</span>
+        </label>
       </ShadcnFormField>
       <div className="flex justify-end space-x-3">
         <Button

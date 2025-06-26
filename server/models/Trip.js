@@ -16,7 +16,23 @@ const tripSchema = new mongoose.Schema({
   calculatedDistance: { type: Number }, // Will be calculated automatically
   tripImages: [{ type: String }], // Array of URLs
   description: { type: String }, // Changed from notes
-  rating: { type: Number, min: 1, max: 5 }
+  rating: { type: Number, min: 1, max: 5 },
+  // --- Rideboard/Public Sharing fields ---
+  visibility: {
+    type: String,
+    enum: ["private", "public"],
+    default: "private"
+  },
+  sharedAt: { type: Date },
+  likes: [{ type: String }], // userIds who liked
+  saves: [{ type: String }], // userIds who saved
+  joins: [{ type: String }], // userIds who joined
+  comments: [{
+    userId: String,
+    displayName: String,
+    text: String,
+    createdAt: { type: Date, default: Date.now }
+  }]
 }, { timestamps: true });
 
 module.exports = mongoose.model("Trip", tripSchema); 
