@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserButton } from "@clerk/clerk-react";
+import { Car, Route, Fuel } from 'lucide-react';
 
 const NAV_LINKS = [
-  { name: "Vehicles", tab: "vehicles" },
-  { name: "Trips", tab: "trips" },
-  { name: "Fuel", tab: "fuel" },
+  { name: "Vehicles", tab: "vehicles", icon: <Car size={18} className="mr-1" /> },
+  { name: "Trips", tab: "trips", icon: <Route size={18} className="mr-1" /> },
+  { name: "Fuel", tab: "fuel", icon: <Fuel size={18} className="mr-1" /> },
 ];
 
 const Navbar = ({ activeTab, setActiveTab }) => {
@@ -65,12 +66,13 @@ const Navbar = ({ activeTab, setActiveTab }) => {
               setActiveTab(link.tab);
               navigate("/");
             }}
-            className={`text-md font-medium px-2 py-1 rounded transition ${
+            className={`flex items-center text-md font-medium px-2 py-1 rounded transition ${
               activeTab === link.tab
                 ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-800 dark:text-white"
                 : "text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-gray-800"
             }`}
           >
+            {link.icon}
             {link.name}
           </button>
         ))}

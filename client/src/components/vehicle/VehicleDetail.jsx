@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Spinner from "../ui/Spinner";
 import FuelLogList from "../fuel/FuelLogList";
@@ -7,6 +7,10 @@ import { useUser } from "@clerk/clerk-react";
 import { Bar, Line } from "react-chartjs-2";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
 import ReactECharts from "echarts-for-react";
+import { useVehicles } from "../../hooks/useVehicles";
+import VehicleForm from "./VehicleForm";
+import { Button } from "../ui/Button";
+import { Edit, Trash2 } from 'lucide-react';
 
 const API_NINJAS_KEY = "8s0Wvvk7bRewkDb4/sKLhA==qVEIlg8bkbJD5NgW";
 
@@ -50,6 +54,10 @@ const VehicleDetail = () => {
   const [fuelLogs, setFuelLogs] = useState([]);
   const [fuelLoading, setFuelLoading] = useState(true);
   const [showAllSpecs, setShowAllSpecs] = useState(false);
+  const navigate = useNavigate();
+  const { updateVehicle, deleteVehicle } = useVehicles(user?.id);
+  const [editing, setEditing] = useState(false);
+  const [error, setError] = useState(null);
 
   // Fetch vehicle from backend
   useEffect(() => {
@@ -163,21 +171,72 @@ const VehicleDetail = () => {
     mileage: Number(mileage[i]) || 0,
   }));
 
+  const handleEdit = () => setEditing(true);
+  const handleCancelEdit = () => setEditing(false);
+  const handleUpdate = async (vehicleData) => {
+    setError(null);
+    const ownerName = user.fullName || user.firstName || user.username || "";
+    const result = await updateVehicle(vehicle._id, {
+      ...vehicleData,
+      userId: user.id,
+      owner: ownerName,
+    });
+    if (result.success) {
+      setEditing(false);
+      setVehicle(result.data);
+    } else {
+      setError(result.error || "Failed to update vehicle");
+    }
+  };
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this vehicle?")) return;
+    const result = await deleteVehicle(vehicle._id);
+    if (result.success) {
+      navigate("/vehicles");
+    } else {
+      setError(result.error || "Failed to delete vehicle");
+    }
+  };
+
   if (vehicleLoading) return <div className="flex justify-center items-center h-64"><Spinner size="lg" /></div>;
   if (!vehicle) return <div className="p-8 text-center text-red-600">Vehicle not found.</div>;
+
+  if (editing) {
+    return (
+      <div className="max-w-2xl mx-auto p-6">
+        <h2 className="text-2xl font-bold mb-4 text-indigo-700">Edit Vehicle</h2>
+        <VehicleForm vehicle={vehicle} onSubmit={handleUpdate} onCancel={handleCancelEdit} error={error} />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex flex-col md:flex-row gap-6 mb-8">
-        {vehicle.imageUrl && (
+        {(vehicle.vehicleImages && vehicle.vehicleImages.length > 0) ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full md:w-2/3">
+            {vehicle.vehicleImages.slice(0, 6).map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`Vehicle ${idx + 1}`}
+                className="object-cover w-full h-40 md:h-48 rounded-xl border shadow-sm"
+                style={{ aspectRatio: '4/3' }}
+              />
+            ))}
+          </div>
+        ) : vehicle.imageUrl ? (
           <img src={vehicle.imageUrl} alt="Vehicle" className="w-full md:w-64 h-48 object-cover rounded-xl border" />
-        )}
+        ) : null}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <h1 className="text-3xl font-bold text-indigo-700">{vehicle.brand} {vehicle.model}</h1>
             {verified === true && <span title="Verified" className="text-green-600 text-2xl">✅</span>}
             {verified === false && <span title="Not Verified" className="text-red-600 text-2xl">⚠️</span>}
+            <Button onClick={handleEdit} className="ml-auto mr-2 flex items-center gap-1" size="sm"><Edit size={16}/> Edit</Button>
+            <Button onClick={handleDelete} className="flex items-center gap-1 bg-red-600 text-white hover:bg-red-700 font-semibold shadow-sm" size="sm"><Trash2 size={16}/> Delete</Button>
           </div>
+          {error && <div className="text-red-600 mb-2">{error}</div>}
           <div className="text-gray-700 mb-2">{vehicle.type} | {vehicle.year} | {vehicle.color}</div>
           <div className="mb-2"><span className="font-medium">Registration:</span> {vehicle.registrationNumber}</div>
           <div className="mb-2"><span className="font-medium">Owner:</span> {vehicle.owner}</div>

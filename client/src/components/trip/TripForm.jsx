@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Form, ShadcnFormField } from "../ui/Form";
+import { Input } from "../ui/Input";
+import { Button } from "../ui/Button";
 
-const TripForm = ({ vehicles, onSubmit, onCancel, ...editTrip }) => {
+const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
   const [formData, setFormData] = useState({
     vehicleId: vehicles[0]?._id || "",
     startLocation: "",
@@ -12,21 +15,47 @@ const TripForm = ({ vehicles, onSubmit, onCancel, ...editTrip }) => {
     rating: ""
   });
 
-  // Autofill form fields when editing
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Autofill form fields when editing, but only when the trip changes
+  const lastEditId = useRef();
   useEffect(() => {
-    if (editTrip && Object.keys(editTrip).length > 0) {
+    if (editTrip && editTrip._id) {
+      if (lastEditId.current !== editTrip._id) {
+        setFormData({
+          vehicleId: editTrip.vehicleId || vehicles[0]?._id || "",
+          startLocation: editTrip.startLocation || "",
+          endLocation: editTrip.endLocation || "",
+          startTime: editTrip.startTime ? new Date(editTrip.startTime).toISOString().slice(0, 16) : "",
+          endTime: editTrip.endTime ? new Date(editTrip.endTime).toISOString().slice(0, 16) : "",
+          tripImages: editTrip.tripImages && editTrip.tripImages.length > 0 ? editTrip.tripImages : [""],
+          description: editTrip.description || "",
+          rating: editTrip.rating || ""
+        });
+        lastEditId.current = editTrip._id;
+      }
+    } else if (!editTrip || !editTrip._id) {
       setFormData({
-        vehicleId: editTrip.vehicleId || vehicles[0]?._id || "",
-        startLocation: editTrip.startLocation || "",
-        endLocation: editTrip.endLocation || "",
-        startTime: editTrip.startTime ? new Date(editTrip.startTime).toISOString().slice(0, 16) : "",
-        endTime: editTrip.endTime ? new Date(editTrip.endTime).toISOString().slice(0, 16) : "",
-        tripImages: editTrip.tripImages && editTrip.tripImages.length > 0 ? editTrip.tripImages : [""],
-        description: editTrip.description || "",
-        rating: editTrip.rating || ""
+        vehicleId: vehicles[0]?._id || "",
+        startLocation: "",
+        endLocation: "",
+        startTime: "",
+        endTime: "",
+        tripImages: [""],
+        description: "",
+        rating: ""
       });
+      lastEditId.current = undefined;
     }
-  }, [editTrip, vehicles]);
+  }, [editTrip?._id, vehicles]);
+
+  const [vehicleImages, setVehicleImages] = useState([]);
+  const tripFileInputRef = useRef();
+  const vehicleFileInputRef = useRef();
+  const [tripUploading, setTripUploading] = useState(false);
+  const [tripUploadError, setTripUploadError] = useState(null);
+  const [vehicleUploading, setVehicleUploading] = useState(false);
+  const [vehicleUploadError, setVehicleUploadError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,25 +74,56 @@ const TripForm = ({ vehicles, onSubmit, onCancel, ...editTrip }) => {
     setFormData((prev) => ({ ...prev, tripImages: [...prev.tripImages, ""] }));
   };
 
+  // Trip image upload
+  const handleTripImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || formData.tripImages.length >= 6) return;
+    setTripUploading(true);
+    setTripUploadError(null);
+    try {
+      const res = await fetch(`/api/generate-upload-url?name=${encodeURIComponent(file.name)}&type=${encodeURIComponent(file.type)}`);
+      if (!res.ok) throw new Error('Failed to get upload URL');
+      const { url, publicUrl } = await res.json();
+      const uploadRes = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+      if (!uploadRes.ok) throw new Error('Failed to upload image');
+      setFormData(prev => ({ ...prev, tripImages: [...prev.tripImages, publicUrl].slice(0, 6) }));
+    } catch (err) {
+      setTripUploadError(err.message || 'Image upload failed');
+    } finally {
+      setTripUploading(false);
+    }
+  };
+
+  // Remove trip image
+  const handleRemoveTripImage = (idx) => {
+    setFormData(prev => ({ ...prev, tripImages: prev.tripImages.filter((_, i) => i !== idx) }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    Promise.resolve(onSubmit({
       ...formData,
       rating: formData.rating ? Number(formData.rating) : undefined,
-      tripImages: formData.tripImages.filter((img) => img)
-    });
+      tripImages: formData.tripImages.filter((img) => img).slice(0, 6),
+    })).finally(() => setIsSubmitting(false));
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto p-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Vehicle</label>
+    <Form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto p-4">
+      <ShadcnFormField label="Vehicle">
         <select
           name="vehicleId"
           value={formData.vehicleId}
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
           required
+          disabled={isSubmitting}
         >
           {vehicles.map((v) => (
             <option key={v._id} value={v._id}>
@@ -71,72 +131,72 @@ const TripForm = ({ vehicles, onSubmit, onCancel, ...editTrip }) => {
             </option>
           ))}
         </select>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Start Location</label>
-        <input
+      </ShadcnFormField>
+      <ShadcnFormField label="Start Location">
+        <Input
           type="text"
           name="startLocation"
           value={formData.startLocation}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
           required
+          disabled={isSubmitting}
         />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">End Location</label>
-        <input
+      </ShadcnFormField>
+      <ShadcnFormField label="End Location">
+        <Input
           type="text"
           name="endLocation"
           value={formData.endLocation}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
           required
+          disabled={isSubmitting}
         />
-      </div>
+      </ShadcnFormField>
       <div className="flex space-x-2">
-        <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700">Start Time</label>
-          <input
+        <ShadcnFormField label="Start Time" className="flex-1">
+          <Input
             type="datetime-local"
             name="startTime"
             value={formData.startTime}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
             required
+            disabled={isSubmitting}
           />
-        </div>
-        <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700">End Time</label>
-          <input
+        </ShadcnFormField>
+        <ShadcnFormField label="End Time" className="flex-1">
+          <Input
             type="datetime-local"
             name="endTime"
             value={formData.endTime}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
             required
+            disabled={isSubmitting}
           />
-        </div>
+        </ShadcnFormField>
       </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Trip Images (URLs)</label>
-        {formData.tripImages.map((img, idx) => (
-          <div key={idx} className="flex space-x-2 mb-1">
+      <ShadcnFormField label="Trip Images (max 6)">
+        <div className="flex flex-wrap gap-2 mb-2">
+          {formData.tripImages.map((img, idx) => (
+            <div key={idx} className="relative group">
+              <img src={img} alt="Trip" className="w-20 h-20 object-cover rounded border" />
+              <Button type="button" variant="secondary" className="absolute top-0 right-0 p-1 text-xs" onClick={() => handleRemoveTripImage(idx)} disabled={isSubmitting || tripUploading}>×</Button>
+            </div>
+          ))}
+          {formData.tripImages.length < 6 && (
             <input
-              type="url"
-              value={img}
-              onChange={(e) => handleImageChange(idx, e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm"
-              placeholder="Image URL"
+              type="file"
+              accept="image/*"
+              ref={tripFileInputRef}
+              onChange={handleTripImageUpload}
+              disabled={isSubmitting || tripUploading}
+              className="w-32"
             />
-            {idx === formData.tripImages.length - 1 && (
-              <button type="button" onClick={addImageField} className="px-2 py-1 bg-gray-200 rounded">+</button>
-            )}
-          </div>
-        ))}
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+          )}
+        </div>
+        {tripUploading && <span className="text-blue-600 text-xs">Uploading...</span>}
+        {tripUploadError && <span className="text-red-600 text-xs">{tripUploadError}</span>}
+      </ShadcnFormField>
+      <ShadcnFormField label="Description">
         <textarea
           name="description"
           value={formData.description}
@@ -144,37 +204,39 @@ const TripForm = ({ vehicles, onSubmit, onCancel, ...editTrip }) => {
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
           rows="3"
           placeholder="Describe your trip..."
+          disabled={isSubmitting}
         />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Rating</label>
-        <input
+      </ShadcnFormField>
+      <ShadcnFormField label="Rating">
+        <Input
           type="number"
           name="rating"
           min="1"
           max="5"
           value={formData.rating}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
           placeholder="Rate your trip (1-5)"
+          disabled={isSubmitting}
         />
-      </div>
+      </ShadcnFormField>
       <div className="flex justify-end space-x-3">
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          variant="secondary"
+          disabled={isSubmitting}
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+          disabled={isSubmitting}
         >
-          Log Trip
-        </button>
+          {isSubmitting ? (editTrip && editTrip._id ? 'Updating...' : 'Logging...') : (editTrip && editTrip._id ? 'Update Trip' : 'Log Trip')}
+        </Button>
       </div>
-    </form>
+      {isSubmitting && <span className="ml-2 text-blue-600">Submitting...</span>}
+    </Form>
   );
 };
 

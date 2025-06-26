@@ -42,6 +42,7 @@ const MyTrips = ({ activeTab }) => {
         color: vehicle?.color,
         registrationNumber: vehicle?.registrationNumber,
         vehicleImage: vehicle?.imageUrl,
+        type: vehicle?.type,
       };
 
       const result = editingTrip
@@ -114,7 +115,7 @@ const MyTrips = ({ activeTab }) => {
                     setShowForm(false);
                     setEditingTrip(null);
                   }}
-                  {...(editingTrip ? { ...editingTrip } : {})}
+                  editTrip={editingTrip}
                 />
               </motion.div>
             ) : (

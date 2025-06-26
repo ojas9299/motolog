@@ -9,10 +9,14 @@ const authRoutes = require("./routes/auth");
 const vehicleRoutes = require("./routes/vehicle");
 const tripRoutes = require("./routes/trip");
 const fuelRoutes = require("./routes/fuel");
+const uploadRoutes = require("./routes/upload");
 
 // Load environment variables
 dotenv.config();
-
+console.log('AWS_ACCESS_KEY_ID:', process.env.AWS_ACCESS_KEY_ID);
+console.log('AWS_SECRET_ACCESS_KEY:', process.env.AWS_SECRET_ACCESS_KEY ? 'set' : 'not set');
+console.log('AWS_REGION:', process.env.AWS_REGION);
+console.log('AWS_BUCKET_NAME:', process.env.AWS_BUCKET_NAME);
 // Initialize express app
 const app = express();
 
@@ -39,7 +43,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/vehicle", vehicleRoutes);
 app.use("/api/trip", tripRoutes);
 app.use("/api/fuel", fuelRoutes);
-
+app.use("/api", uploadRoutes);
 // Health check route
 app.get("/health", (req, res) => {
   res.json({ status: "OK" });
