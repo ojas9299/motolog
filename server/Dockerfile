@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Copy the entire server codebase
+# Copy the entire server codeb
 COPY . .
 
 # Expose the port your app runs on
