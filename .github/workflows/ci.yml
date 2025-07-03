@@ -1,0 +1,51 @@
+name: CI for Motolog App
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend - Install & Lint
+    runs-on: ubuntu-latest
+    working-directory: ./server
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies (server)
+        run: npm install
+
+      - name: Lint backend (optional)
+        run: npm run lint
+        continue-on-error: true
+
+  frontend:
+    name: Frontend - Build & Lint
+    runs-on: ubuntu-latest
+    working-directory: ./client
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies (client)
+        run: npm install
+
+      - name: Lint frontend (optional)
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build frontend
+        run: npm run build
