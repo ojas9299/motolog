@@ -25,13 +25,13 @@ const FuelForm = ({ vehicleId, onLogSaved, initialOdo = "", initialFuel = "", ed
     try {
       if (editLogId) {
         // Update existing log
-        await axios.put(`/api/fuel/log/${editLogId}`, {
+        await axios.put(`http://16.171.137.112:5000/api/fuel/log/${editLogId}`, {
           odoReading: Number(odoReading),
           fuelLitres: Number(fuelLitres),
         });
       } else {
         // Create new log
-        await axios.post("/api/fuel", {
+        await axios.post(`http://16.171.137.112:5000/api/fuel`, {
           userId: user?.id, // ✅ Manually pass userId
           vehicleId,
           odoReading: Number(odoReading),
