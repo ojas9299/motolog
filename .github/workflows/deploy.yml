@@ -33,6 +33,8 @@ jobs:
             echo "🧼 Stopping existing container"
             docker-compose down
 
+          echo "${{ secrets.ENV_FILE }}" > .env
+
             echo "🔧 Rebuilding and restarting backend"
             docker-compose build --no-cache
             docker-compose up -d
