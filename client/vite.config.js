@@ -1,16 +1,18 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   css: {
-    postcss: './postcss.config.js',
+    postcss: "./postcss.config.js",
   },
   server: {
     proxy: {
-      "/api": "http://localhost:5000",
-      "/api/generate-upload-url": "http://localhost:5000",
+      "/api": {
+        target: "http://16.171.137.112:5000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
     },
   },
 });

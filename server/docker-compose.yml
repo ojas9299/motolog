@@ -1,0 +1,12 @@
+# docker-compose.yml
+version: "3.8"
+
+services:
+  motolog-backend:
+    build: .
+    container_name: motolog-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    restart: always

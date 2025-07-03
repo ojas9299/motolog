@@ -30,7 +30,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: CORS_ORIGIN,
+    origin: "https://motolog.vercel.app",
     credentials: true,
   })
 );
