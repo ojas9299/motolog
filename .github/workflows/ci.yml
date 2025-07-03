@@ -10,7 +10,6 @@ jobs:
   backend:
     name: Backend - Install & Lint
     runs-on: ubuntu-latest
-    working-directory: ./server
 
     steps:
       - uses: actions/checkout@v3
@@ -22,15 +21,16 @@ jobs:
 
       - name: Install dependencies (server)
         run: npm install
+        working-directory: ./server
 
       - name: Lint backend (optional)
         run: npm run lint
+        working-directory: ./server
         continue-on-error: true
 
   frontend:
     name: Frontend - Build & Lint
     runs-on: ubuntu-latest
-    working-directory: ./client
 
     steps:
       - uses: actions/checkout@v3
@@ -38,14 +38,17 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20 # changed to 20 for consistency
 
       - name: Install dependencies (client)
         run: npm install
+        working-directory: ./client
 
       - name: Lint frontend (optional)
         run: npm run lint
+        working-directory: ./client
         continue-on-error: true
 
       - name: Build frontend
         run: npm run build
+        working-directory: ./client
