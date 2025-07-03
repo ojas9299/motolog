@@ -1,11 +1,17 @@
 {
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "@eslint/js": "^9.30.1",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.30.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.3.0"
   },
   "scripts": {
     "client": "cd client && npm run dev",
     "server": "cd server && nodemon server.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.32.0",

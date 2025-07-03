@@ -23,7 +23,7 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
 
   useEffect(() => {
     if (vehicleId && userId) fetchLogs();
-    // eslint-disable-next-line
+     
   }, [vehicleId, userId, refreshKey, localRefresh]);
 
   const handleDelete = async (log) => {

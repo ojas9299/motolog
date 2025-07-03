@@ -36,6 +36,10 @@ jobs:
         working-directory: ./server
         continue-on-error: true
 
+      - name: Run backend tests
+        run: npm test
+        working-directory: ./server
+
   frontend:
     name: Frontend - Build & Lint
     runs-on: ubuntu-latest
