@@ -19,9 +19,13 @@ jobs:
 
       - name: SSH & Deploy
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2-USER }}@${{ secrets.EC2-HOST }} << 'EOF'
-            cd motolog/server
-            git pull origin main
-            docker compose down
-            docker compose up -d --build --no-cache
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          echo "📂 Changing to backend directory"
+          cd /home/ubuntu/motolog/server
+          echo "🔄 Pulling latest code"
+          git pull origin main
+          echo "🧼 Stopping existing container"
+          docker compose down
+          echo "🚀 Rebuilding and restarting backend"
+          docker compose up -d --build --no-cache
           EOF
