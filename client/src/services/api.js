@@ -1,4 +1,4 @@
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'http://16.171.137.112:5000/api';
 
 /**
  * Generic API request function
