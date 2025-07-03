@@ -20,8 +20,8 @@ jobs:
       - name: SSH & Deploy
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2-USER }}@${{ secrets.EC2-HOST }} << 'EOF'
-            cd motolog-backend
+            cd motolog/server
             git pull origin main
             docker compose down
-            docker compose up -d --build
+            docker compose up -d --build --no-cache
           EOF
