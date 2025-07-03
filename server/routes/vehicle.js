@@ -1,7 +1,7 @@
 // routes/vehicle.js
 const express = require("express");
 const router = express.Router();
-const Vehicle = require("../models/Vehicle");
+const Vehicle = require("../models/vehicle");
 const axios = require("axios");
 const FuelLog = require("../models/FuelLog");
 const Trip = require("../models/Trip");

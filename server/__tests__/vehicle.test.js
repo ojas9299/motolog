@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../server');
-const Vehicle = require('../models/Vehicle');
+const Vehicle = require('../models/vehicle');
 const FuelLog = require('../models/FuelLog');
 const Trip = require('../models/Trip');
 
