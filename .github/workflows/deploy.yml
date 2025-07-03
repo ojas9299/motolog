@@ -12,20 +12,23 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup SSH key
-        run: |
-          echo "${{ secrets.EC2_KEY }}" > key.pem
-          chmod 400 key.pem
-
       - name: SSH & Deploy
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          echo "📂 Changing to backend directory"
-          cd /home/ubuntu/motolog/server
-          echo "🔄 Pulling latest code"
-          git pull origin main
-          echo "🧼 Stopping existing container"
-          docker compose down
-          echo "🚀 Rebuilding and restarting backend"
-          docker compose up -d --build --no-cache
-          EOF
+         ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+         echo "📂 Changing to backend directory"
+         cd /home/ubuntu/motolog/server
+
+         echo "🧹 Cleaning untracked files"
+         git reset --hard
+         git clean -fd
+
+         echo "🔄 Pulling latest code"
+         git pull origin main
+
+         echo "🧼 Stopping existing container"
+         docker-compose down
+
+         echo "🔧 Rebuilding and restarting backend"
+         docker-compose build --no-cache
+         docker-compose up -d
+       EOF
