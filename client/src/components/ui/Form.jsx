@@ -15,11 +15,17 @@ export function ShadcnFormField({
   error,
   children,
   className = "",
+  labelClassName = "",
+  labelStyle = {},
 }) {
   return (
     <div className={`space-y-1 ${className}`}>
       {label && (
-        <label htmlFor={htmlFor} className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor={htmlFor}
+          className={`block text-sm font-medium text-gray-700 dark:text-white ${labelClassName}`}
+          style={labelStyle}
+        >
           {label}
         </label>
       )}

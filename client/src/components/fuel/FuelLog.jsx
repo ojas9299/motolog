@@ -48,21 +48,23 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
   if (loading) return <p className="p-4">Loading fuel logs...</p>;
 
   return (
-    <div className="p-4">
-      {editingLog ? (
-        <div className="mb-4">
-          <FuelForm
-            vehicleId={vehicleId}
-            onLogSaved={handleEditSaved}
-            // Pass initial values for edit
-            initialOdo={editingLog.odoReading}
-            initialFuel={editingLog.fuelLitres}
-            editLogId={editingLog._id}
-            onCancel={() => setEditingLog(null)}
-          />
-        </div>
-      ) : null}
-      <FuelLogList logs={logs} onEdit={handleEdit} onDelete={handleDelete} />
+    <div>
+      <div className="p-0">
+        {editingLog ? (
+          <div className="mb-4">
+            <FuelForm
+              vehicleId={vehicleId}
+              onLogSaved={handleEditSaved}
+              // Pass initial values for edit
+              initialOdo={editingLog.odoReading}
+              initialFuel={editingLog.fuelLitres}
+              editLogId={editingLog._id}
+              onCancel={() => setEditingLog(null)}
+            />
+          </div>
+        ) : null}
+        <FuelLogList logs={logs} onEdit={handleEdit} onDelete={handleDelete} />
+      </div>
     </div>
   );
 };

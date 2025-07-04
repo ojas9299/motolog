@@ -34,9 +34,9 @@ const RideboardList = () => {
   if (!trips.length) return <div className="p-4 text-gray-500">No public trips on Rideboard yet.</div>;
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="flex flex-col items-center w-full min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-2 sm:px-0">
       <h2 className="text-3xl font-bold mb-8 text-indigo-700 dark:text-indigo-200">Rideboard (Public Trips)</h2>
-      <div className="w-full max-w-xl flex flex-col gap-8">
+      <div className="w-full max-w-xl flex flex-col gap-4 sm:gap-8">
         {trips.map((trip, idx) => {
           const liked = !!userId && trip.likes?.includes(userId);
           const saved = !!userId && trip.saves?.includes(userId);

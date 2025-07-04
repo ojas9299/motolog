@@ -4,7 +4,7 @@ import { Button } from '../ui/Button';
 const FuelLogList = ({ logs = [], onEdit, onDelete }) => {
   return (
     <div>
-      <h2 className="font-semibold mb-2">Previous Fuel Logs</h2>
+      <h2 className="font-semibold mb-2 dark:text-white">Previous Fuel Logs</h2>
       {logs.length === 0 ? (
         <p>No logs yet.</p>
       ) : (
@@ -12,8 +12,8 @@ const FuelLogList = ({ logs = [], onEdit, onDelete }) => {
           {logs.map((log) => (
             <li key={log._id} className="border p-2 rounded flex items-center justify-between gap-2">
               <div>
-                <div className="flex items-center gap-1"><Gauge size={16} className="text-indigo-500" /> Odo: {log.odoReading} km</div>
-                <div className="flex items-center gap-1"><Fuel size={16} className="text-green-600" /> Fuel: {log.fuelLitres} L</div>
+                <div className="flex items-center gap-1"><Gauge size={16} className="text-indigo-500" /> <span style={{color:'#000'}}>Odo: {log.odoReading} km</span></div>
+                <div className="flex items-center gap-1"><Fuel size={16} className="text-green-600" /> <span style={{color:'#000'}}>Fuel: {log.fuelLitres} L</span></div>
                 <div>
                   {log.mileage !== null && log.mileage !== undefined
                     ? `Mileage: ${log.mileage.toFixed(2)} km/l`

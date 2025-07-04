@@ -52,10 +52,10 @@ const FuelForm = ({ vehicleId, onLogSaved, initialOdo = "", initialFuel = "", ed
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="mb-4">
+    <Form onSubmit={handleSubmit} className="mb-4 px-2 sm:px-0 dark:text-white">
       <h2 className="font-bold mb-2">{editLogId ? "Edit Fuel Log" : "Add Fuel Log"}</h2>
       {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-      <ShadcnFormField label="Odometer Reading">
+      <ShadcnFormField label="Odometer Reading" labelStyle={{color:'#000'}}>
         <Input
           type="number"
           placeholder="Odometer Reading"
@@ -65,7 +65,7 @@ const FuelForm = ({ vehicleId, onLogSaved, initialOdo = "", initialFuel = "", ed
           disabled={isSubmitting}
         />
       </ShadcnFormField>
-      <ShadcnFormField label="Fuel Litres">
+      <ShadcnFormField label="Fuel Litres" labelStyle={{color:'#000'}}>
         <Input
           type="number"
           placeholder="Fuel Litres"

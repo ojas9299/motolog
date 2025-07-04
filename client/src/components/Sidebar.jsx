@@ -15,8 +15,8 @@ const Sidebar = ({ setActiveTab, activeTab, children }) => {
 
   return (
     <div className="flex">
-      {/* Clean Sidebar, no logo or Motolog text or Log New Trip button */}
-      <aside className="w-64 min-h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col justify-start">
+      {/* Sidebar: hidden on mobile */}
+      <aside className="hidden md:flex w-64 min-h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex-col justify-start">
         <div className="px-4 py-4">
           <nav className="flex flex-col gap-1">
             {tabs.map((tab) => (
@@ -43,7 +43,8 @@ const Sidebar = ({ setActiveTab, activeTab, children }) => {
           </nav>
         </div>
       </aside>
-      <main className="flex-1">{children}</main>
+      {/* Main content: full width on mobile */}
+      <main className="flex-1 w-full">{children}</main>
     </div>
   );
 };

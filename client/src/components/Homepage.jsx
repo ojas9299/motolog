@@ -29,19 +29,19 @@ const Homepage = () => {
         />
       </div>
       {/* Foreground Content */}
-      <div className="relative flex flex-col items-center justify-center min-h-screen text-center mt-60">
+      <div className="relative flex flex-col items-center justify-center min-h-screen text-center mt-40 sm:mt-60 px-2 sm:px-0">
         <BlurText
           text="Welcome to"
           delay={100}
           animateBy="words"
           direction="top"
-          className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-2 z-20"
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-2 z-20"
         />
-        <div className="flex flex-row items-center justify-center my-8 overflow-hidden" style={{height: 'min-content'}}>
-          <span className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white mr-4 select-none">MotoLog</span>
+        <div className="flex flex-col sm:flex-row items-center justify-center my-6 sm:my-8 overflow-hidden w-full" style={{height: 'min-content'}}>
+          <span className="text-6xl xs:text-6xl sm:text-6xl md:text-7xl font-extrabold text-white mr-0 sm:mr-4 select-none">MotoLog</span>
           <RotatingText
             texts={["Intuitive", "Powerful", "Flexible", "Reliable", "Effortless", "Seamless"]}
-            mainClassName="text-5xl sm:text-6xl md:text-7xl font-bold text-indigo-300 px-2 sm:px-2 md:px-3 overflow-hidden py-2 sm:py-3 md:py-4 justify-center rounded-lg z-20"
+            mainClassName="text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-bold text-indigo-300 px-2 sm:px-2 md:px-3 overflow-hidden py-2 sm:py-3 md:py-4 justify-center rounded-lg z-20"
             staggerFrom={"last"}
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -54,6 +54,17 @@ const Homepage = () => {
         </div>
 
         <SignedOut>
+          <div className="absolute top-4 right-4 z-50 w-64 max-w-full bg-neutral-900/90 border border-pink-400 rounded-xl p-4 text-left shadow-lg hidden sm:block">
+            <div className="font-bold text-pink-400 mb-2 text-center">Demo Credentials for Testing</div>
+            <div className="text-white text-sm"><span className="font-semibold">Email:</span> bhalerao.hgfdk22@sinhgad.edu</div>
+            <div className="text-white text-sm"><span className="font-semibold">Password:</span> democreds@123</div>
+          </div>
+          {/* For mobile, show at top of content */}
+          <div className="w-full max-w-xs mx-auto mb-4 bg-neutral-900/80 border border-pink-400 rounded-xl p-4 text-left block sm:hidden">
+            <div className="font-bold text-pink-400 mb-2 text-center">Demo Credentials for Testing</div>
+            <div className="text-white text-sm"><span className="font-semibold">Email:</span> bhalerao.hgfdk22@sinhgad.edu</div>
+            <div className="text-white text-sm"><span className="font-semibold">Password:</span> democreds@123</div>
+          </div>
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
             <SignInButton mode="modal">
               <StarBorder
@@ -91,58 +102,58 @@ const Homepage = () => {
         </SignedIn>
 
         {/* Features Grid */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl mx-auto">
+        <div className="mt-8 sm:mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-xs xs:max-w-sm sm:max-w-2xl lg:max-w-5xl mx-auto px-2 sm:px-0">
           <SpotlightCard spotlightColor="rgba(48, 33, 188, 0.4)">
-            <div className="flex flex-col items-center justify-center">
-              <Car size={40} className="mb-3 text-indigo-300" />
-              <h2 className="text-xl font-bold mb-2 text-indigo-200">Vehicle Management</h2>
-              <p className="text-indigo-100 text-center">Effortlessly organize every ride. Add, edit, and manage your vehicles in one place.</p>
+            <div className="flex flex-col items-center justify-center p-3 sm:p-4">
+              <Car size={28} className="mb-2 text-indigo-300" />
+              <h2 className="text-lg font-bold mb-1 text-indigo-200">Vehicle Management</h2>
+              <p className="text-indigo-100 text-center text-sm">Effortlessly organize every ride. Add, edit, and manage your vehicles in one place.</p>
             </div>
           </SpotlightCard>
           <SpotlightCard spotlightColor="rgba(48, 33, 188, 0.4)">
-            <div className="flex flex-col items-center justify-center">
-              <Route size={40} className="mb-3 text-indigo-300" />
-              <h2 className="text-xl font-bold mb-2 text-indigo-200">Trip Logging</h2>
-              <p className="text-indigo-100 text-center">Track every journey, automatically. Logging trips is as easy as hitting the road.</p>
+            <div className="flex flex-col items-center justify-center p-3 sm:p-4">
+              <Route size={28} className="mb-2 text-indigo-300" />
+              <h2 className="text-lg font-bold mb-1 text-indigo-200">Trip Logging</h2>
+              <p className="text-indigo-100 text-center text-sm">Track every journey, automatically. Logging trips is as easy as hitting the road.</p>
             </div>
           </SpotlightCard>
           <SpotlightCard spotlightColor="rgba(48, 33, 188, 0.4)">
-            <div className="flex flex-col items-center justify-center">
-              <Map size={40} className="mb-3 text-indigo-300" />
-              <h2 className="text-xl font-bold mb-2 text-indigo-200">Interactive Maps</h2>
-              <p className="text-indigo-100 text-center">See your routes come alive. Visualize every trip with beautiful, interactive maps.</p>
+            <div className="flex flex-col items-center justify-center p-3 sm:p-4">
+              <Map size={28} className="mb-2 text-indigo-300" />
+              <h2 className="text-lg font-bold mb-1 text-indigo-200">Interactive Maps</h2>
+              <p className="text-indigo-100 text-center text-sm">See your routes come alive. Visualize every trip with beautiful, interactive maps.</p>
             </div>
           </SpotlightCard>
           <SpotlightCard spotlightColor="rgba(48, 33, 188, 0.4)">
-            <div className="flex flex-col items-center justify-center">
-              <UserCheck size={40} className="mb-3 text-indigo-300" />
-              <h2 className="text-xl font-bold mb-2 text-indigo-200">User Authentication</h2>
-              <p className="text-indigo-100 text-center">Your data, protected. Sign in securely and enjoy a personalized experience.</p>
+            <div className="flex flex-col items-center justify-center p-3 sm:p-4">
+              <UserCheck size={28} className="mb-2 text-indigo-300" />
+              <h2 className="text-lg font-bold mb-1 text-indigo-200">User Authentication</h2>
+              <p className="text-indigo-100 text-center text-sm">Your data, protected. Sign in securely and enjoy a personalized experience.</p>
             </div>
           </SpotlightCard>
           <SpotlightCard spotlightColor="rgba(48, 33, 188, 0.4)">
-            <div className="flex flex-col items-center justify-center">
-              <RefreshCw size={40} className="mb-3 text-indigo-300" />
-              <h2 className="text-xl font-bold mb-2 text-indigo-200">Real-time Updates</h2>
-              <p className="text-indigo-100 text-center">Stay in sync, everywhere. Your logs and vehicles update instantly across devices.</p>
+            <div className="flex flex-col items-center justify-center p-3 sm:p-4">
+              <RefreshCw size={28} className="mb-2 text-indigo-300" />
+              <h2 className="text-lg font-bold mb-1 text-indigo-200">Real-time Updates</h2>
+              <p className="text-indigo-100 text-center text-sm">Stay in sync, everywhere. Your logs and vehicles update instantly across devices.</p>
             </div>
           </SpotlightCard>
           <SpotlightCard spotlightColor="rgba(48, 33, 188, 0.4)">
-            <div className="flex flex-col items-center justify-center">
-              <MapPin size={40} className="mb-3 text-indigo-300" />
-              <h2 className="text-xl font-bold mb-2 text-indigo-200">Automatic Geocoding</h2>
-              <p className="text-indigo-100 text-center">Smart locations, zero hassle. Get real-time distance and location for every trip.</p>
+            <div className="flex flex-col items-center justify-center p-3 sm:p-4">
+              <MapPin size={28} className="mb-2 text-indigo-300" />
+              <h2 className="text-lg font-bold mb-1 text-indigo-200">Automatic Geocoding</h2>
+              <p className="text-indigo-100 text-center text-sm">Smart locations, zero hassle. Get real-time distance and location for every trip.</p>
             </div>
           </SpotlightCard>
         </div>
 
         <div className="h-12 sm:h-16 md:h-20" />
-        <section className="max-w-5xl mx-auto mt-0 mb-20 w-full px-4 py-14 bg-neutral-950/80 rounded-2xl shadow-lg">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-white mb-10">Frequently Asked Questions</h2>
+        <section className="max-w-xs xs:max-w-sm sm:max-w-2xl lg:max-w-5xl mx-auto mt-0 mb-20 w-full px-2 sm:px-4 py-10 sm:py-14 bg-neutral-950/80 rounded-2xl shadow-lg">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-center text-white mb-8 sm:mb-10">Frequently Asked Questions</h2>
           <Accordion.Root type="single" collapsible className="space-y-6">
             <Accordion.Item value="q1" className="bg-neutral-900/80 border border-neutral-700 rounded-xl">
               <Accordion.Header>
-                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
+                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-base sm:text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
                   What is Motolog?
                   <ChevronDownIcon className="ml-2 h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </Accordion.Trigger>
@@ -153,7 +164,7 @@ const Homepage = () => {
             </Accordion.Item>
             <Accordion.Item value="q2" className="bg-neutral-900/80 border border-neutral-700 rounded-xl">
               <Accordion.Header>
-                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
+                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-base sm:text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
                   Is my data secure?
                   <ChevronDownIcon className="ml-2 h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </Accordion.Trigger>
@@ -164,7 +175,7 @@ const Homepage = () => {
             </Accordion.Item>
             <Accordion.Item value="q3" className="bg-neutral-900/80 border border-neutral-700 rounded-xl">
               <Accordion.Header>
-                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
+                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-base sm:text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
                   Can I use Motolog on mobile?
                   <ChevronDownIcon className="ml-2 h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </Accordion.Trigger>
@@ -175,7 +186,7 @@ const Homepage = () => {
             </Accordion.Item>
             <Accordion.Item value="q4" className="bg-neutral-900/80 border border-neutral-700 rounded-xl">
               <Accordion.Header>
-                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
+                <Accordion.Trigger className="flex w-full items-center justify-between px-6 py-4 text-base sm:text-lg font-semibold text-indigo-300 hover:bg-neutral-800 rounded-xl transition">
                   How do I get started?
                   <ChevronDownIcon className="ml-2 h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </Accordion.Trigger>
@@ -186,14 +197,6 @@ const Homepage = () => {
             </Accordion.Item>
           </Accordion.Root>
         </section>
-
-        {/* Footer */}
-        <footer className="w-full py-8 bg-neutral-950/90 border-t border-neutral-800 text-center text-indigo-200 text-sm">
-          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 px-4">
-            <span>© {new Date().getFullYear()} Motolog. All rights reserved.</span>
-            <span>Made with <span className="text-pink-400">♥</span> by Ojas B.</span>
-          </div>
-        </footer>
       </div>
     </div>
   );

@@ -42,7 +42,7 @@ const RideboardCard = ({ trip, onLike, onSave, onJoin, onComment, liked, likeCou
         <img
           src={images[0]}
           alt="Trip"
-          className="w-full h-96 object-cover cursor-pointer"
+          className="w-full h-48 sm:h-96 object-cover cursor-pointer"
           style={{ borderRadius: continuous ? 0 : undefined }}
           onClick={() => handleImageClick(0)}
         />
@@ -50,16 +50,16 @@ const RideboardCard = ({ trip, onLike, onSave, onJoin, onComment, liked, likeCou
       {modalOpen && (
         <ImageModal images={images} startIndex={modalIdx} onClose={() => setModalOpen(false)} />
       )}
-      <div className="px-6 pt-4 pb-2 flex flex-col gap-2">
+      <div className="px-2 sm:px-6 pt-3 sm:pt-4 pb-2 flex flex-col gap-2">
         <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
           <Calendar size={16} className="text-indigo-400" />
           {trip.startTime && new Date(trip.startTime).toLocaleString()} <span className="mx-1">→</span> {trip.endTime && new Date(trip.endTime).toLocaleString()}
         </div>
         <div className="flex items-center justify-between gap-2 mb-1">
-          <div className="font-bold text-indigo-700 dark:text-indigo-200 text-lg flex items-center gap-2">
+          <div className="font-bold text-indigo-700 dark:text-indigo-200 text-base sm:text-lg flex items-center gap-2">
             {trip.brand} {trip.model}
           </div>
-          <span className="text-base font-bold text-indigo-600 dark:text-indigo-100 bg-indigo-50 dark:bg-indigo-800 px-3 py-1 rounded shadow-sm flex items-center gap-2">
+          <span className="text-sm sm:text-base font-bold text-indigo-600 dark:text-indigo-100 bg-indigo-50 dark:bg-indigo-800 px-2 sm:px-3 py-1 rounded shadow-sm flex items-center gap-2">
             <MapPin size={16} className="text-green-500" />
             {trip.startLocation}
             <span className="mx-1">→</span>
@@ -69,7 +69,7 @@ const RideboardCard = ({ trip, onLike, onSave, onJoin, onComment, liked, likeCou
         </div>
         {/* Instagram-style caption */}
         {trip.description && (
-          <div className="mb-1 text-base">
+          <div className="mb-1 text-sm sm:text-base">
             <span className="font-semibold text-indigo-700 dark:text-indigo-200 mr-2">{trip.owner}</span>
             <span className="text-gray-800 dark:text-white">{trip.description}</span>
           </div>

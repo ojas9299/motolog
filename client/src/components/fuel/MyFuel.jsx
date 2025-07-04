@@ -26,7 +26,7 @@ const MyFuel = ({ activeTab }) => {
   return (
     <div className="p-4">
       <h2 className="text-3xl font-extrabold text-indigo-700 mb-6">My Fuel Logs</h2>
-      <h2 className="text-xl font-semibold mb-4">Fuel Tracker</h2>
+      <h2 className="text-xl font-semibold mb-4 dark:text-white">Fuel Tracker</h2>
       {loading ? (
         <p>Loading vehicles...</p>
       ) : error ? (
@@ -71,7 +71,7 @@ const MyFuel = ({ activeTab }) => {
                 </Button>
               </div>
               {showFormFor === vehicle._id && (
-                <div className="mt-2">
+                <div className="mt-2 dark:text-white">
                   <FuelForm
                     vehicleId={vehicle._id}
                     onLogSaved={() => handleLogSaved(vehicle._id)}

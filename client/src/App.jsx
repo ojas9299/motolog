@@ -28,6 +28,7 @@ import Navbar from "./components/ui/Navbar";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
 import Homepage from "./components/Homepage";
 import RideboardList from "./components/rideboard/RideboardList";
+import Footer from "./components/ui/Footer";
 
 // Wrapper to extract route param and pass callback
 const FuelFormWrapper = () => {
@@ -82,52 +83,57 @@ export default function App() {
         {(location.pathname !== "/" || user) && (
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} setDarkMode={setDarkMode} />
         )}
-        <Routes>
-          {/* Homepage */}
-          <Route
-            path="/"
-            element={
-              <>
-                <SignedIn>
+        <div className="flex flex-col min-h-screen">
+          <div className="flex-1">
+            <Routes>
+              {/* Homepage */}
+              <Route
+                path="/"
+                element={
+                  <>
+                    <SignedIn>
+                      <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                        <MyVehicles activeTab={activeTab} />
+                        <MyTrips activeTab={activeTab} />
+                        <MyFuel activeTab={activeTab} />
+                      </Sidebar>
+                    </SignedIn>
+                    <SignedOut>
+                      <Homepage />
+                    </SignedOut>
+                  </>
+                }
+              />
+              {/* Vehicles Route */}
+              <Route
+                path="/vehicles"
+                element={
                   <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-                    <MyVehicles activeTab={activeTab} />
-                    <MyTrips activeTab={activeTab} />
-                    <MyFuel activeTab={activeTab} />
+                    <MyVehicles activeTab="vehicles" />
                   </Sidebar>
-                </SignedIn>
-                <SignedOut>
-                  <Homepage />
-                </SignedOut>
-              </>
-            }
-          />
-          {/* Vehicles Route */}
-          <Route
-            path="/vehicles"
-            element={
-              <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-                <MyVehicles activeTab="vehicles" />
-              </Sidebar>
-            }
-          />
-          {/* Analytics Route */}
-          <Route path="/analytics" element={
-            <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-              <AnalyticsDashboard />
-            </Sidebar>
-          } />
-          {/* Fuel Routes */}
-          <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
-          <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
-          {/* Vehicle Routes */}
-          <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
-          {/* Rideboard Route */}
-          <Route path="/rideboard" element={
-            <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-              <RideboardList />
-            </Sidebar>
-          } />
-        </Routes>
+                }
+              />
+              {/* Analytics Route */}
+              <Route path="/analytics" element={
+                <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                  <AnalyticsDashboard />
+                </Sidebar>
+              } />
+              {/* Fuel Routes */}
+              <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
+              <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
+              {/* Vehicle Routes */}
+              <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
+              {/* Rideboard Route */}
+              <Route path="/rideboard" element={
+                <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                  <RideboardList />
+                </Sidebar>
+              } />
+            </Routes>
+          </div>
+          <Footer />
+        </div>
       </>
     </Tooltip.Provider>
   );

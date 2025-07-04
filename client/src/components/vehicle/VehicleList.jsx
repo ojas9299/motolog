@@ -199,62 +199,63 @@ const VehicleList = () => {
         {loading ? (
           <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>
         ) : vehicles.length === 0 ? (
-          <div className="text-center text-indigo-400 py-12 text-lg">No vehicles found. Add your first vehicle!</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-10">
-            {vehicles.map((vehicle) => (
-              <Card
-                key={vehicle._id}
-                className="group flex flex-col p-0 cursor-pointer hover:shadow-2xl hover:ring-2 hover:ring-indigo-200 transition-shadow min-h-[420px] max-w-2xl w-full mx-auto relative font-sans border-2 border-indigo-100 bg-white"
-                onClick={() => handleCardClick(vehicle)}
-                tabIndex={0}
-                role="button"
-                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(vehicle); }}
-              >
-                <div className="w-full h-56 sm:h-64 md:h-72 lg:h-80 flex items-center justify-center bg-indigo-100 rounded-t-xl overflow-hidden relative">
-                  {vehicle.vehicleImages && vehicle.vehicleImages.length > 0 ? (
-                    <img
-                      src={vehicle.vehicleImages[0]}
-                      alt={vehicle.brand + ' ' + vehicle.model}
-                      className="object-cover w-full h-full transform transition-transform duration-300 group-hover:scale-105"
-                    />
-                  ) : vehicle.imageUrl ? (
-                    <img
-                      src={vehicle.imageUrl}
-                      alt={vehicle.brand + ' ' + vehicle.model}
-                      className="object-cover w-full h-full transform transition-transform duration-300 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center w-full h-full text-indigo-400 text-7xl font-extrabold">
-                      {vehicle.brand?.[0]?.toUpperCase() || <Car size={56} />}
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-row items-center w-full px-6 pt-5">
-                  <div className="text-3xl font-bold text-indigo-900 mb-1">{vehicle.brand} {vehicle.model}</div>
-                </div>
-                <div className="flex flex-row flex-wrap items-center gap-3 text-sm font-medium w-full px-6 pt-3 pb-4">
-                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.color}</span>
-                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.type?.toUpperCase()}</span>
-                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.year}</span>
-                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.registrationNumber}</span>
-                </div>
-              </Card>
-            ))}
+          <div className="flex flex-col items-center justify-center min-h-[320px]">
             <Card
-              className="group flex flex-col items-center justify-center p-0 cursor-pointer border-2 border-dashed border-indigo-200 bg-gray-50 min-h-[420px] max-w-2xl w-full mx-auto relative font-sans opacity-70 hover:opacity-100 hover:shadow-xl transition-all"
+              className="group flex flex-col items-center justify-center p-0 cursor-pointer border-2 border-dashed border-indigo-200 bg-gray-50 min-h-[320px] sm:min-h-[420px] w-full mx-0 relative font-sans opacity-70 hover:opacity-100 hover:shadow-xl transition-all"
               onClick={() => setIsAdding(true)}
               tabIndex={0}
               role="button"
               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setIsAdding(true); }}
             >
-              <div className="w-full h-56 sm:h-64 md:h-72 lg:h-80 flex flex-col items-center justify-center rounded-t-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-indigo-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <div className="w-full h-40 sm:h-56 md:h-64 lg:h-80 flex flex-col items-center justify-center rounded-t-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 sm:h-20 sm:w-20 text-indigo-300 mb-2 sm:mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
-                <span className="text-xl font-semibold text-indigo-400">Add New Vehicle</span>
+                <span className="text-base sm:text-xl font-semibold text-indigo-400">Add New Vehicle</span>
               </div>
             </Card>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-10">
+            {vehicles.map((vehicle) => (
+              <Card
+                key={vehicle._id}
+                className="group flex flex-col p-0 sm:p-0 cursor-pointer hover:shadow-2xl hover:ring-2 hover:ring-indigo-200 transition-shadow min-h-[320px] sm:min-h-[420px] w-full mx-0 relative font-sans border-2 border-indigo-100 bg-white"
+                onClick={() => handleCardClick(vehicle)}
+                tabIndex={0}
+                role="button"
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(vehicle); }}
+              >
+                <div className="w-full h-52 sm:h-56 md:h-64 lg:h-80 flex items-center justify-center bg-indigo-100 rounded-t-xl overflow-hidden relative">
+                  {vehicle.vehicleImages && vehicle.vehicleImages.length > 0 ? (
+                    <img
+                      src={vehicle.vehicleImages[0]}
+                      alt={vehicle.brand + ' ' + vehicle.model}
+                      className="object-cover w-full h-full rounded transform transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : vehicle.imageUrl ? (
+                    <img
+                      src={vehicle.imageUrl}
+                      alt={vehicle.brand + ' ' + vehicle.model}
+                      className="object-cover w-full h-full rounded transform transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-indigo-400 text-5xl sm:text-7xl font-extrabold">
+                      {vehicle.brand?.[0]?.toUpperCase() || <Car size={40} className="sm:hidden" />}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-row items-center w-full px-2 sm:px-6 pt-3 sm:pt-5">
+                  <div className="text-xl sm:text-3xl font-bold text-indigo-900 mb-1">{vehicle.brand} {vehicle.model}</div>
+                </div>
+                <div className="flex flex-row flex-wrap items-center gap-1 sm:gap-3 text-xs sm:text-sm font-medium w-full px-2 sm:px-6 pt-2 sm:pt-3 pb-2 sm:pb-4">
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-2 sm:px-3 py-1 transition duration-200 hover:scale-105">{vehicle.color}</span>
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-2 sm:px-3 py-1 transition duration-200 hover:scale-105">{vehicle.type?.toUpperCase()}</span>
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-2 sm:px-3 py-1 transition duration-200 hover:scale-105">{vehicle.year}</span>
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-2 sm:px-3 py-1 transition duration-200 hover:scale-105">{vehicle.registrationNumber}</span>
+                </div>
+              </Card>
+            ))}
           </div>
         )}
       </div>

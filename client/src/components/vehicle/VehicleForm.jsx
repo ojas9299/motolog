@@ -104,7 +104,7 @@ const VehicleForm = ({ vehicle, onSubmit, onCancel, error }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-4">
+    <Form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto px-2 sm:p-4 dark:text-white">
       {error && (
         <div className="mb-4 text-red-600 font-semibold text-center">
           {error}

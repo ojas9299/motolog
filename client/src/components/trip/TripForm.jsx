@@ -120,7 +120,7 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto p-4">
+    <Form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto px-2 sm:p-4 dark:text-white">
       <ShadcnFormField label="Vehicle">
         <select
           name="vehicleId"
@@ -206,7 +206,7 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
           rows="3"
           placeholder="Describe your trip..."
           disabled={isSubmitting}

@@ -137,19 +137,19 @@ const AnalyticsDashboard = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Chart.js Bar */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Fuel-ups Over Time</h2>
-            <Bar data={fuelBarData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+          <div className="bg-white rounded-xl shadow p-3 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Fuel-ups Over Time</h2>
+            <Bar data={fuelBarData} options={{ responsive: true, plugins: { legend: { display: false } } }} height={220} />
           </div>
           {/* Chart.js Line */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Odometer Readings Over Time</h2>
-            <Line data={odoLineData} options={{ responsive: true }} />
+          <div className="bg-white rounded-xl shadow p-3 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Odometer Readings Over Time</h2>
+            <Line data={odoLineData} options={{ responsive: true }} height={220} />
           </div>
           {/* Recharts Area */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-xl font-bold mb-4">Mileage Trend</h2>
-            <ResponsiveContainer width="100%" height={300}>
+          <div className="bg-white rounded-xl shadow p-3 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Mileage Trend</h2>
+            <ResponsiveContainer width="100%" height={180}>
               <AreaChart data={mileageAreaData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorMileage" x1="0" y1="0" x2="0" y2="1">
@@ -168,9 +168,9 @@ const AnalyticsDashboard = () => {
           </div>
           {/* ECharts Pie */}
           {selectedVehicle === "all" && (
-            <div className="bg-white rounded-xl shadow p-6">
-              <h2 className="text-xl font-bold mb-4">Fuel-ups by Vehicle</h2>
-              <ReactECharts option={pieOption} style={{ height: 350 }} />
+            <div className="bg-white rounded-xl shadow p-3 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Fuel-ups by Vehicle</h2>
+              <ReactECharts option={pieOption} style={{ height: 180, minHeight: 180, maxHeight: 220 }} />
             </div>
           )}
         </div>
