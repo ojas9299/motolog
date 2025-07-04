@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Form, ShadcnFormField } from "../ui/Form";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
+import { useUser } from '@clerk/clerk-react';
 
 const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
+  const { user } = useUser();
   const [formData, setFormData] = useState({
     vehicleId: vehicles[0]?._id || "",
     startLocation: "",
@@ -110,12 +112,14 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
     e.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
+    const owner = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
     Promise.resolve(onSubmit({
       ...formData,
       rating: formData.rating ? Number(formData.rating) : undefined,
       tripImages: formData.tripImages.filter((img) => img).slice(0, 6),
       visibility: sharePublic ? "public" : "private",
       sharedAt: sharePublic ? new Date().toISOString() : undefined,
+      owner,
     })).finally(() => setIsSubmitting(false));
   };
 

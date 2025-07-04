@@ -3,8 +3,10 @@ import { Form, ShadcnFormField } from "../ui/Form";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import PropTypes from 'prop-types';
+import { useUser } from '@clerk/clerk-react';
 
-const VehicleForm = ({ vehicle, onSubmit, onCancel, error, owner }) => {
+const VehicleForm = ({ vehicle, onSubmit, onCancel, error }) => {
+  const { user } = useUser();
   const [formData, setFormData] = useState({
     type: vehicle?.type || 'car',
     brand: vehicle?.brand || '',
@@ -38,6 +40,7 @@ const VehicleForm = ({ vehicle, onSubmit, onCancel, error, owner }) => {
     e.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
+    const owner = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
     const dataToSend = {
       ...formData,
       year: Number(formData.year),
@@ -45,7 +48,7 @@ const VehicleForm = ({ vehicle, onSubmit, onCancel, error, owner }) => {
       registrationNumber: formData.registrationNumber.toUpperCase(),
       vehicleImages: vehicleImages.slice(0, 6),
       imageUrl: vehicleImages[0] || '', // for backward compatibility
-      ...(owner ? { owner } : {}),
+      owner,
     };
     Promise.resolve(onSubmit(dataToSend)).finally(() => setIsSubmitting(false));
   };
@@ -226,7 +229,6 @@ VehicleForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   error: PropTypes.string,
-  owner: PropTypes.string,
 };
 
 export default VehicleForm; 

@@ -98,7 +98,7 @@ const VehicleList = () => {
 
   const handleAddVehicle = async (vehicleData) => {
     try {
-      const ownerName = user?.fullName || user?.firstName || user?.username || "";
+      const ownerName = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
       const result = await createVehicle({
         ...vehicleData,
         userId: user?.id || "",
@@ -117,7 +117,7 @@ const VehicleList = () => {
 
   const handleUpdateVehicle = async (vehicleData) => {
     try {
-      const ownerName = user.fullName || user.firstName || user.username || "";
+      const ownerName = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
       const result = await updateVehicle(editingVehicle._id, {
         ...vehicleData,
         userId: user.id,
@@ -153,19 +153,21 @@ const VehicleList = () => {
   if (!user) return <p className="text-center py-10 text-lg">Please sign in to view your vehicles.</p>;
 
   if (isAdding) {
+    const ownerName = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
     return (
       <div className="p-4 max-w-xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-indigo-700">Add New Vehicle</h2>
         <VehicleForm
           onSubmit={handleAddVehicle}
           onCancel={() => setIsAdding(false)}
-          owner={user?.fullName || user?.firstName || user?.username || ""}
+          owner={ownerName}
         />
       </div>
     );
   }
 
   if (editingVehicle) {
+    const ownerName = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
     return (
       <div className="p-4 max-w-xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-indigo-700">Edit Vehicle</h2>
@@ -173,6 +175,7 @@ const VehicleList = () => {
           vehicle={editingVehicle}
           onSubmit={handleUpdateVehicle}
           onCancel={() => setEditingVehicle(null)}
+          owner={ownerName}
         />
       </div>
     );

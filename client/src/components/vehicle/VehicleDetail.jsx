@@ -178,7 +178,7 @@ const VehicleDetail = () => {
   const handleCancelEdit = () => setEditing(false);
   const handleUpdate = async (vehicleData) => {
     setError(null);
-    const ownerName = user.fullName || user.firstName || user.username || "";
+    const ownerName = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
     const result = await updateVehicle(vehicle._id, {
       ...vehicleData,
       userId: user.id,

@@ -23,22 +23,24 @@ const FuelForm = ({ vehicleId, onLogSaved, initialOdo = "", initialFuel = "", ed
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
+      const owner = user?.fullName || user?.firstName || user?.username || user?.emailAddresses?.[0]?.emailAddress || "Unknown";
       if (editLogId) {
         // Update existing log
         await axios.put(`https://api.motolog.online/api/fuel/log/${editLogId}`, {
           odoReading: Number(odoReading),
           fuelLitres: Number(fuelLitres),
+          owner,
         });
       } else {
         // Create new log
         await axios.post(`https://api.motolog.online/api/fuel`, {
-          userId: user?.id, // ✅ Manually pass userId
+          userId: user?.id,
           vehicleId,
           odoReading: Number(odoReading),
           fuelLitres: Number(fuelLitres),
+          owner,
         });
       }
-
       setOdoReading("");
       setFuelLitres("");
       setError(null);
