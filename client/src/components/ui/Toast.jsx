@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
 
 /**
  * Toast notification component
@@ -12,33 +13,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Toast = ({ message, type = 'success', visible, onClose }) => {
   if (!visible || !message) return null;
 
-  const getToastStyles = () => {
-    switch (type) {
-      case 'success':
-        return 'bg-green-500 text-white';
-      case 'error':
-        return 'bg-red-500 text-white';
-      case 'warning':
-        return 'bg-yellow-500 text-white';
-      case 'info':
-        return 'bg-blue-500 text-white';
-      default:
-        return 'bg-gray-500 text-white';
-    }
-  };
+  const getToastStyles = () => 'bg-black text-white rounded-lg shadow-lg';
 
   const getIcon = () => {
     switch (type) {
       case 'success':
-        return '✅';
+        return <CheckCircle className="text-green-400" size={22} />;
       case 'error':
-        return '❌';
+        return <XCircle className="text-red-400" size={22} />;
       case 'warning':
-        return '⚠️';
+        return <AlertTriangle className="text-yellow-400" size={22} />;
       case 'info':
-        return 'ℹ️';
+        return <Info className="text-blue-400" size={22} />;
       default:
-        return '💬';
+        return <Info className="text-white" size={22} />;
     }
   };
 

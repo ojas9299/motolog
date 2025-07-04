@@ -1,3 +1,6 @@
+import { Gauge, Fuel, Edit, Trash2 } from 'lucide-react';
+import { Button } from '../ui/Button';
+
 const FuelLogList = ({ logs = [], onEdit, onDelete }) => {
   return (
     <div>
@@ -9,8 +12,8 @@ const FuelLogList = ({ logs = [], onEdit, onDelete }) => {
           {logs.map((log) => (
             <li key={log._id} className="border p-2 rounded flex items-center justify-between gap-2">
               <div>
-                <div>🧭 Odo: {log.odoReading} km</div>
-                <div>⛽ Fuel: {log.fuelLitres} L</div>
+                <div className="flex items-center gap-1"><Gauge size={16} className="text-indigo-500" /> Odo: {log.odoReading} km</div>
+                <div className="flex items-center gap-1"><Fuel size={16} className="text-green-600" /> Fuel: {log.fuelLitres} L</div>
                 <div>
                   {log.mileage !== null && log.mileage !== undefined
                     ? `Mileage: ${log.mileage.toFixed(2)} km/l`
@@ -21,20 +24,20 @@ const FuelLogList = ({ logs = [], onEdit, onDelete }) => {
                 </div>
               </div>
               <div className="flex flex-col gap-2 ml-2">
-                <button
+                <Button
                   title="Edit"
-                  className="text-blue-600 hover:text-blue-800 text-xl"
+                  className="mb-1 flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1"
                   onClick={() => onEdit && onEdit(log)}
                 >
-                  ✏️
-                </button>
-                <button
+                  <Edit size={16} /> Edit
+                </Button>
+                <Button
                   title="Delete"
-                  className="text-red-600 hover:text-red-800 text-xl"
+                  className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-2 py-1"
                   onClick={() => onDelete && onDelete(log)}
                 >
-                  🗑️
-                </button>
+                  <Trash2 size={16} /> Delete
+                </Button>
               </div>
             </li>
           ))}

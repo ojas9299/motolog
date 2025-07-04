@@ -108,6 +108,7 @@ const MyTrips = ({ activeTab }) => {
           exit={{ opacity: 0 }}
         >
           <div className="p-4">
+            <h2 className="text-3xl font-extrabold text-indigo-700 mb-6">My Trips</h2>
             {showForm ? (
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}

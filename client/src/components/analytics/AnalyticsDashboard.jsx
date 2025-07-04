@@ -118,13 +118,13 @@ const AnalyticsDashboard = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-indigo-700">Analytics & Graphs</h1>
+      <h1 className="text-3xl font-bold mb-6 text-indigo-700 dark:text-indigo-200">Analytics & Graphs</h1>
       <div className="mb-6 flex flex-wrap gap-4 items-center">
-        <label className="font-medium">Select Vehicle:</label>
+        <label className="font-medium text-gray-700 dark:text-gray-200">Select Vehicle:</label>
         <select
           value={selectedVehicle}
           onChange={e => setSelectedVehicle(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-700"
         >
           <option value="all">All Vehicles (Combined)</option>
           {vehicles.map(v => (

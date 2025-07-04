@@ -3,6 +3,8 @@ import { useUser } from "@clerk/clerk-react";
 import FuelForm from "./FuelForm";
 import FuelLog from "./FuelLog";
 import { useVehicles } from "../../hooks/useVehicles";
+import { Fuel as FuelIcon, ListPlus, Eye, EyeOff } from 'lucide-react';
+import { Button } from '../ui/Button';
 
 const MyFuel = ({ activeTab }) => {
   const { user } = useUser();
@@ -23,6 +25,7 @@ const MyFuel = ({ activeTab }) => {
 
   return (
     <div className="p-4">
+      <h2 className="text-3xl font-extrabold text-indigo-700 mb-6">My Fuel Logs</h2>
       <h2 className="text-xl font-semibold mb-4">Fuel Tracker</h2>
       {loading ? (
         <p>Loading vehicles...</p>
@@ -44,26 +47,28 @@ const MyFuel = ({ activeTab }) => {
                 Registration: {vehicle.registrationNumber}
               </p>
               <div className="flex gap-4 mb-2">
-                <button
-                  onClick={() =>
-                    setShowFormFor(
-                      showFormFor === vehicle._id ? null : vehicle._id
-                    )
-                  }
-                  className="bg-green-600 text-white px-3 py-1 rounded"
+                {showFormFor !== vehicle._id && (
+                  <Button
+                    onClick={() => setShowFormFor(vehicle._id)}
+                    className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1"
+                  >
+                    <FuelIcon size={16} /> Log Fuel
+                  </Button>
+                )}
+                {showFormFor === vehicle._id && (
+                  <Button
+                    onClick={() => setShowFormFor(null)}
+                    className="flex items-center gap-1 bg-gray-400 hover:bg-gray-500 text-white px-3 py-1"
+                  >
+                    <ListPlus size={16} /> Hide Form
+                  </Button>
+                )}
+                <Button
+                  onClick={() => setShowLogsFor(showLogsFor === vehicle._id ? null : vehicle._id)}
+                  className={`flex items-center gap-1 ${showLogsFor === vehicle._id ? 'bg-blue-400 hover:bg-blue-500' : 'bg-blue-600 hover:bg-blue-700'} text-white px-3 py-1`}
                 >
-                  {showFormFor === vehicle._id ? "Hide Form" : "Log Fuel"}
-                </button>
-                <button
-                  onClick={() =>
-                    setShowLogsFor(
-                      showLogsFor === vehicle._id ? null : vehicle._id
-                    )
-                  }
-                  className="bg-blue-600 text-white px-3 py-1 rounded"
-                >
-                  {showLogsFor === vehicle._id ? "Hide Logs" : "View Logs"}
-                </button>
+                  {showLogsFor === vehicle._id ? <EyeOff size={16} /> : <Eye size={16} />} {showLogsFor === vehicle._id ? 'Hide Logs' : 'View Logs'}
+                </Button>
               </div>
               {showFormFor === vehicle._id && (
                 <div className="mt-2">

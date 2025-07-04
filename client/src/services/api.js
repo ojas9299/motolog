@@ -187,10 +187,12 @@ export const rideboardAPI = {
     body: JSON.stringify({ userId, displayName, text }),
   }),
   /**
-   * Get all public (Rideboard) trips
+   * Get all public (Rideboard) trips, paginated
+   * @param {number} page - Page number (1-based)
+   * @param {number} limit - Number of trips per page
    * @returns {Promise} Public trips data
    */
-  getPublicTrips: () => apiRequest('/rideboard'),
+  getPublicTrips: (page = 1, limit = 10) => apiRequest(`/rideboard?page=${page}&limit=${limit}`),
   /**
    * Delete a comment from a public trip
    */

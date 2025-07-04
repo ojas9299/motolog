@@ -9,12 +9,9 @@ const NAV_LINKS = [
   { name: "Fuel", tab: "fuel", icon: <Fuel size={18} className="mr-1" /> },
 ];
 
-const Navbar = ({ activeTab, setActiveTab }) => {
+const Navbar = ({ activeTab, setActiveTab, darkMode, setDarkMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("motolog-dark-mode") === "true";
-  });
 
   const handleBack = () => {
     navigate(-1);
@@ -22,19 +19,19 @@ const Navbar = ({ activeTab, setActiveTab }) => {
 
   const isHome = location.pathname === "/";
 
-  //   useEffect(() => {
-  //     // Do not apply any dark/light mode logic on homepage
-  //     if (location.pathname === "/") {
-  //       return;
-  //     }
-  //     // Only apply dark mode on other routes
-  //     if (darkMode) {
-  //       document.documentElement.classList.add("dark");
-  //     } else {
-  //       document.documentElement.classList.remove("dark");
-  //     }
-  //     localStorage.setItem("motolog-dark-mode", darkMode);
-  //   }, [darkMode, location.pathname]);
+  useEffect(() => {
+    // Do not apply any dark/light mode logic on homepage
+    if (location.pathname === "/") {
+      return;
+    }
+    // Only apply dark mode on other routes
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("motolog-dark-mode", darkMode);
+  }, [darkMode, location.pathname]);
 
   return (
     <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow flex items-center justify-between px-4 py-2">

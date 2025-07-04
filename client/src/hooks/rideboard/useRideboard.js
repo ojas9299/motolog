@@ -5,14 +5,19 @@ export const useRideboard = () => {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 10;
 
-  // Fetch public trips
+  // Fetch public trips (first page)
   const fetchPublicTrips = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await rideboardAPI.getPublicTrips();
+      const response = await rideboardAPI.getPublicTrips(1, limit);
       setTrips(response.data.trips || []);
+      setPage(1);
+      setHasMore(response.data.hasMore !== false && (response.data.trips?.length === limit));
     } catch (err) {
       setError(err.message);
       console.error('Error fetching public trips:', err);
@@ -20,6 +25,25 @@ export const useRideboard = () => {
       setLoading(false);
     }
   }, []);
+
+  // Fetch more trips (next page)
+  const fetchMorePublicTrips = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const nextPage = page + 1;
+      const response = await rideboardAPI.getPublicTrips(nextPage, limit);
+      setTrips(prev => [...prev, ...(response.data.trips || [])]);
+      setPage(nextPage);
+      setHasMore(response.data.hasMore !== false && (response.data.trips?.length === limit));
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching more public trips:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, hasMore, loading]);
 
   useEffect(() => {
     fetchPublicTrips();
@@ -114,6 +138,8 @@ export const useRideboard = () => {
     loading,
     error,
     fetchPublicTrips,
+    fetchMorePublicTrips,
+    hasMore,
     likeTrip,
     saveTrip,
     joinTrip,

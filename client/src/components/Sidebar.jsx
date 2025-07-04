@@ -16,7 +16,7 @@ const Sidebar = ({ setActiveTab, activeTab, children }) => {
   return (
     <div className="flex">
       {/* Clean Sidebar, no logo or Motolog text or Log New Trip button */}
-      <aside className="w-64 min-h-screen bg-white border-r border-gray-200 flex flex-col justify-start">
+      <aside className="w-64 min-h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col justify-start">
         <div className="px-4 py-4">
           <nav className="flex flex-col gap-1">
             {tabs.map((tab) => (
@@ -32,8 +32,8 @@ const Sidebar = ({ setActiveTab, activeTab, children }) => {
                 }}
                 className={`flex items-center gap-3 px-4 py-2 rounded-lg text-base font-medium transition text-left ${
                   activeTab === tab.key
-                    ? "bg-indigo-100 text-indigo-700 font-bold"
-                    : "text-gray-700 hover:bg-gray-50"
+                    ? "bg-indigo-100 dark:bg-indigo-800 text-indigo-700 dark:text-white font-bold"
+                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
                 }`}
               >
                 {tab.icon}

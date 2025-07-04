@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SignedIn,
   SignedOut,
@@ -63,12 +63,24 @@ export default function App() {
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState("vehicles");
   const location = useLocation();
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("motolog-dark-mode") === "true";
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("motolog-dark-mode", darkMode);
+  }, [darkMode]);
 
   return (
     <Tooltip.Provider>
       <>
         {(location.pathname !== "/" || user) && (
-          <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+          <Navbar activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} setDarkMode={setDarkMode} />
         )}
         <Routes>
           {/* Homepage */}
@@ -99,7 +111,11 @@ export default function App() {
             }
           />
           {/* Analytics Route */}
-          <Route path="/analytics" element={<AnalyticsDashboard />} />
+          <Route path="/analytics" element={
+            <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+              <AnalyticsDashboard />
+            </Sidebar>
+          } />
           {/* Fuel Routes */}
           <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
           <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
