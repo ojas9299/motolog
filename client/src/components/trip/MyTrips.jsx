@@ -126,19 +126,6 @@ const MyTrips = ({ activeTab }) => {
               </motion.div>
             ) : (
               <>
-                <motion.button
-                  whileHover={{ scale: 1.04, backgroundColor: "#6366f1" }}
-                  whileTap={{ scale: 0.97 }}
-                  className="mb-6 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-lg font-semibold text-lg transition-all"
-                  onClick={() => {
-                    setShowForm(true);
-                    setEditingTrip(null);
-                  }}
-                  disabled={vehicles.length === 0}
-                >
-                  Log New Trip
-                </motion.button>
-
                 {vehicles.length === 0 && (
                   <p className="text-gray-500 mb-4">
                     Add a vehicle first to log a trip.
@@ -151,10 +138,10 @@ const MyTrips = ({ activeTab }) => {
                   </div>
                 )}
 
-                {loading && <Spinner size="lg" className="my-8" />}
+                {loading && <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-                  <AnimatePresence>
+                  <AnimatePresence mode="sync">
                     {filteredTrips.map((trip) => (
                       <TripCard
                         key={trip._id}
@@ -168,6 +155,30 @@ const MyTrips = ({ activeTab }) => {
                       />
                     ))}
                   </AnimatePresence>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -30 }}
+                    whileHover={{ scale: 1.03, boxShadow: "0 8px 32px rgba(99,102,241,0.10)" }}
+                    className="transition-all duration-200 flex justify-center"
+                  >
+                    <div
+                      className="rounded-2xl shadow-lg p-0 bg-gray-50 flex flex-col gap-2 w-full border-2 border-dashed border-indigo-200 mx-auto my-2 max-w-md min-h-[420px] opacity-70 hover:opacity-100 hover:shadow-xl cursor-pointer items-center justify-center"
+                      onClick={() => { setShowForm(true); setEditingTrip(null); }}
+                      tabIndex={0}
+                      role="button"
+                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setShowForm(true); setEditingTrip(null); } }}
+                    >
+                      <div className="w-full aspect-[16/9] bg-gray-100 border-b border-gray-200 shadow-sm flex items-center justify-center rounded-t-2xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                      <div className="p-4 flex flex-col gap-2 min-h-0 items-center justify-center">
+                        <span className="text-xl font-semibold text-indigo-400">Add New Trip</span>
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
               </>
             )}

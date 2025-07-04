@@ -53,9 +53,7 @@ const VehicleSpecsModal = ({ open, onClose, specs, loading, verified }) => {
           {verified === false && <span title="Not Verified" className="text-red-600 text-xl">⚠️</span>}
         </h2>
         {loading ? (
-          <div className="flex justify-center items-center h-32">
-            <Spinner size="lg" />
-          </div>
+          <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>
         ) : specs ? (
           <div className="space-y-2">
             <div className="text-lg font-semibold mb-2">{specs.make} {specs.model} {specs.year}</div>
@@ -196,33 +194,24 @@ const VehicleList = () => {
       />
       <div className="p-4 max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <h2 className="text-3xl font-extrabold text-indigo-700">Your Vehicles</h2>
-          <Button
-            onClick={() => setIsAdding(true)}
-            className="w-full sm:w-auto px-4 py-2 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg rounded-lg transition duration-150 ease-in-out"
-          >
-            <MoreVertical size={18} />
-            Add Vehicle
-          </Button>
+          <h2 className="text-3xl font-extrabold text-indigo-700">My Vehicles</h2>
         </div>
         {loading ? (
-          <div className="flex justify-center items-center h-40">
-            <Spinner size="lg" />
-          </div>
+          <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>
         ) : vehicles.length === 0 ? (
           <div className="text-center text-indigo-400 py-12 text-lg">No vehicles found. Add your first vehicle!</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-10">
             {vehicles.map((vehicle) => (
               <Card
                 key={vehicle._id}
-                className="group flex flex-col p-0 cursor-pointer hover:shadow-2xl hover:ring-2 hover:ring-indigo-200 transition-shadow min-h-[340px] relative font-sans"
+                className="group flex flex-col p-0 cursor-pointer hover:shadow-2xl hover:ring-2 hover:ring-indigo-200 transition-shadow min-h-[420px] max-w-2xl w-full mx-auto relative font-sans border-2 border-indigo-100 bg-white"
                 onClick={() => handleCardClick(vehicle)}
                 tabIndex={0}
                 role="button"
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(vehicle); }}
               >
-                <div className="w-full h-44 sm:h-52 md:h-56 lg:h-60 flex items-center justify-center bg-indigo-100 rounded-t-xl overflow-hidden relative">
+                <div className="w-full h-56 sm:h-64 md:h-72 lg:h-80 flex items-center justify-center bg-indigo-100 rounded-t-xl overflow-hidden relative">
                   {vehicle.vehicleImages && vehicle.vehicleImages.length > 0 ? (
                     <img
                       src={vehicle.vehicleImages[0]}
@@ -236,21 +225,36 @@ const VehicleList = () => {
                       className="object-cover w-full h-full transform transition-transform duration-300 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-full h-full text-indigo-400 text-6xl font-extrabold">
-                      {vehicle.brand?.[0]?.toUpperCase() || <Car size={48} />}
+                    <div className="flex items-center justify-center w-full h-full text-indigo-400 text-7xl font-extrabold">
+                      {vehicle.brand?.[0]?.toUpperCase() || <Car size={56} />}
                     </div>
                   )}
                 </div>
-                <div className="flex flex-row items-center w-full px-4 pt-3">
-                  <div className="text-2xl font-semibold text-indigo-900 mb-1">{vehicle.brand} {vehicle.model}</div>
+                <div className="flex flex-row items-center w-full px-6 pt-5">
+                  <div className="text-3xl font-bold text-indigo-900 mb-1">{vehicle.brand} {vehicle.model}</div>
                 </div>
-                <div className="flex flex-row flex-wrap items-center gap-2 text-xs font-medium w-full px-4 pt-2">
-                  <span className="text-indigo-700 bg-indigo-50 rounded px-2 py-1 transition duration-200 hover:scale-105">{vehicle.color}</span>
-                  <span className="text-indigo-700 bg-indigo-50 rounded px-2 py-1 transition duration-200 hover:scale-105">{vehicle.type?.toUpperCase()}</span>
-                  <span className="text-indigo-700 bg-indigo-50 rounded px-2 py-1 transition duration-200 hover:scale-105">{vehicle.year}</span>
+                <div className="flex flex-row flex-wrap items-center gap-3 text-sm font-medium w-full px-6 pt-3 pb-4">
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.color}</span>
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.type?.toUpperCase()}</span>
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.year}</span>
+                  <span className="text-indigo-700 bg-indigo-50 rounded px-3 py-1 transition duration-200 hover:scale-105">{vehicle.registrationNumber}</span>
                 </div>
               </Card>
             ))}
+            <Card
+              className="group flex flex-col items-center justify-center p-0 cursor-pointer border-2 border-dashed border-indigo-200 bg-gray-50 min-h-[420px] max-w-2xl w-full mx-auto relative font-sans opacity-70 hover:opacity-100 hover:shadow-xl transition-all"
+              onClick={() => setIsAdding(true)}
+              tabIndex={0}
+              role="button"
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setIsAdding(true); }}
+            >
+              <div className="w-full h-56 sm:h-64 md:h-72 lg:h-80 flex flex-col items-center justify-center rounded-t-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-indigo-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="text-xl font-semibold text-indigo-400">Add New Vehicle</span>
+              </div>
+            </Card>
           </div>
         )}
       </div>

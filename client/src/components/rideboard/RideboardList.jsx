@@ -17,7 +17,7 @@ const RideboardList = () => {
     await deleteComment(tripId, commentId, userId);
   };
 
-  if (loading) return <Spinner size="lg" className="my-8" />;
+  if (loading) return <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>;
   if (error) return <div className="p-4 bg-red-100 text-red-700 rounded">Error: {error}</div>;
   if (!trips.length) return <div className="p-4 text-gray-500">No public trips on Rideboard yet.</div>;
 

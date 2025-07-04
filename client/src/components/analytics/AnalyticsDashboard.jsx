@@ -4,6 +4,7 @@ import axios from "axios";
 import { Bar, Line } from "react-chartjs-2";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
 import ReactECharts from "echarts-for-react";
+import Spinner from "../ui/Spinner";
 
 // Chart.js registration
 import {
@@ -132,7 +133,7 @@ const AnalyticsDashboard = () => {
         </select>
       </div>
       {loading ? (
-        <div className="flex justify-center items-center h-64"><span>Loading...</span></div>
+        <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Chart.js Bar */}

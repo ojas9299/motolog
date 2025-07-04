@@ -201,7 +201,7 @@ const VehicleDetail = () => {
     }
   };
 
-  if (vehicleLoading) return <div className="flex justify-center items-center h-64"><Spinner size="lg" /></div>;
+  if (vehicleLoading) return <div className="flex justify-center items-center min-h-[60vh]"><Spinner /></div>;
   if (!vehicle) return <div className="p-8 text-center text-red-600">Vehicle not found.</div>;
 
   if (editing) {
@@ -216,41 +216,86 @@ const VehicleDetail = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex flex-col md:flex-row gap-6 mb-8">
-        {(vehicle.vehicleImages && vehicle.vehicleImages.length > 0) ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full md:w-2/3">
-            {vehicle.vehicleImages.slice(0, 6).map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`Vehicle ${idx + 1}`}
-                className="object-cover w-full h-40 md:h-48 rounded-xl border shadow-sm cursor-pointer"
-                style={{ aspectRatio: '4/3' }}
-                onClick={() => { setModalIdx(idx); setModalOpen(true); }}
-              />
-            ))}
+        <div className="w-full md:w-[70%]">
+          <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center justify-center min-h-[420px]">
+            {(vehicle.vehicleImages && vehicle.vehicleImages.length > 0) ? (
+              (() => {
+                const imgs = vehicle.vehicleImages.slice(0, 3);
+                if (imgs.length === 1) {
+                  return (
+                    <img
+                      src={imgs[0]}
+                      alt="Vehicle"
+                      className="object-contain w-full h-[420px] rounded-xl bg-gray-50 cursor-pointer"
+                      onClick={() => { setModalIdx(0); setModalOpen(true); }}
+                    />
+                  );
+                } else if (imgs.length === 2) {
+                  return (
+                    <div className="flex gap-4 w-full h-[420px]">
+                      <img
+                        src={imgs[0]}
+                        alt="Vehicle 1"
+                        className="object-contain w-1/2 h-full rounded-xl bg-gray-50 cursor-pointer"
+                        onClick={() => { setModalIdx(0); setModalOpen(true); }}
+                      />
+                      <img
+                        src={imgs[1]}
+                        alt="Vehicle 2"
+                        className="object-contain w-1/2 h-full rounded-xl bg-gray-50 cursor-pointer"
+                        onClick={() => { setModalIdx(1); setModalOpen(true); }}
+                      />
+                    </div>
+                  );
+                } else if (imgs.length === 3) {
+                  return (
+                    <div className="flex gap-4 w-full h-[420px]">
+                      <img
+                        src={imgs[0]}
+                        alt="Vehicle 1"
+                        className="object-contain w-1/2 h-full rounded-xl bg-gray-50 cursor-pointer"
+                        onClick={() => { setModalIdx(0); setModalOpen(true); }}
+                      />
+                      <div className="flex flex-col gap-4 w-1/2 h-full">
+                        <img
+                          src={imgs[1]}
+                          alt="Vehicle 2"
+                          className="object-contain w-full h-1/2 rounded-xl bg-gray-50 cursor-pointer"
+                          onClick={() => { setModalIdx(1); setModalOpen(true); }}
+                        />
+                        <img
+                          src={imgs[2]}
+                          alt="Vehicle 3"
+                          className="object-contain w-full h-1/2 rounded-xl bg-gray-50 cursor-pointer"
+                          onClick={() => { setModalIdx(2); setModalOpen(true); }}
+                        />
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return null;
+                }
+              })()
+            ) : vehicle.imageUrl ? (
+              <img src={vehicle.imageUrl} alt="Vehicle" className="object-contain w-full h-[420px] rounded-xl bg-gray-50 cursor-pointer" onClick={() => { setModalIdx(0); setModalOpen(true); }} />
+            ) : null}
           </div>
-        ) : vehicle.imageUrl ? (
-          <img src={vehicle.imageUrl} alt="Vehicle" className="w-full md:w-64 h-48 object-cover rounded-xl border cursor-pointer" onClick={() => { setModalIdx(0); setModalOpen(true); }} />
-        ) : null}
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h1 className="text-3xl font-bold text-indigo-700">{vehicle.brand} {vehicle.model}</h1>
-            {verified === true && <span title="Verified" className="text-green-600 text-2xl">✅</span>}
-            {verified === false && <span title="Not Verified" className="text-red-600 text-2xl">⚠️</span>}
-            <Button onClick={handleEdit} className="ml-auto mr-2 flex items-center gap-1" size="sm"><Edit size={16}/> Edit</Button>
-            <Button onClick={handleDelete} className="flex items-center gap-1 bg-red-600 text-white hover:bg-red-700 font-semibold shadow-sm" size="sm"><Trash2 size={16}/> Delete</Button>
+        </div>
+        <div className="flex-1 flex flex-col justify-start">
+          <div className="flex flex-col gap-2 mb-2 mt-16">
+            <h1 className="text-5xl font-extrabold text-indigo-700 leading-tight">{vehicle.brand} {vehicle.model}</h1>
+            <div className="flex gap-2 mt-2">
+              <Button onClick={handleEdit} className="flex items-center gap-1" size="sm"><Edit size={18}/> Edit</Button>
+              <Button onClick={handleDelete} className="flex items-center gap-1 bg-red-600 text-white hover:bg-red-700 font-semibold shadow-sm" size="sm"><Trash2 size={18}/> Delete</Button>
+            </div>
           </div>
           {error && <div className="text-red-600 mb-2">{error}</div>}
-          <div className="text-gray-700 mb-2">{vehicle.type} | {vehicle.year} | {vehicle.color}</div>
-          <div className="mb-2"><span className="font-medium">Registration:</span> {vehicle.registrationNumber}</div>
-          <div className="mb-2"><span className="font-medium">Owner:</span> {vehicle.owner}</div>
-          <div className="mb-2"><span className="font-medium">Kilometers:</span> {vehicle.kilometersDriven?.toLocaleString() || "0"}</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">Verified Specs {specsLoading && <Spinner size="sm" />}</h2>
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">Verified Specs {specsLoading && <div className="flex justify-center items-center min-h-[60px]"><Spinner /></div>}</h2>
           {specs ? (
             <div>
               <div className={`flex flex-row flex-wrap gap-x-8 gap-y-2 overflow-x-auto pb-2 ${showAllSpecs ? 'max-h-56 overflow-y-auto' : ''}`}>
@@ -278,7 +323,7 @@ const VehicleDetail = () => {
           )}
         </div>
         <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-xl font-bold mb-4">Owner-entered Details</h2>
+          <h2 className="text-xl font-bold mb-4">Vehicle Details</h2>
           <div className="space-y-2">
             <div><span className="font-medium">Type:</span> {vehicle.type}</div>
             <div><span className="font-medium">Year:</span> {vehicle.year}</div>
@@ -293,7 +338,7 @@ const VehicleDetail = () => {
       <div className="bg-white rounded-xl shadow p-6 mb-8">
         <h2 className="text-xl font-bold mb-4">Trips</h2>
         {tripsLoading ? (
-          <Spinner size="sm" />
+          <div className="flex justify-center items-center min-h-[60px]"><Spinner /></div>
         ) : trips.length === 0 ? (
           <div className="text-gray-500">No trips found for this vehicle.</div>
         ) : (
@@ -313,7 +358,7 @@ const VehicleDetail = () => {
       <div className="bg-white rounded-xl shadow p-6 mb-8">
         <h2 className="text-xl font-bold mb-4">Fuel Logs</h2>
         {fuelLoading ? (
-          <Spinner size="sm" />
+          <div className="flex justify-center items-center min-h-[60px]"><Spinner /></div>
         ) : fuelLogs.length === 0 ? (
           <div className="text-gray-500">No fuel logs found for this vehicle.</div>
         ) : (
