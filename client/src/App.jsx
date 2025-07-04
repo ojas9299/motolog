@@ -79,7 +79,8 @@ export default function App() {
 
   return (
     <Tooltip.Provider>
-      <>
+      
+      <> 
         {(location.pathname !== "/" || user) && (
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} setDarkMode={setDarkMode} />
         )}

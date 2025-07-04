@@ -98,10 +98,10 @@ const VehicleList = () => {
 
   const handleAddVehicle = async (vehicleData) => {
     try {
-      const ownerName = user.fullName || user.firstName || user.username || "";
+      const ownerName = user?.fullName || user?.firstName || user?.username || "";
       const result = await createVehicle({
         ...vehicleData,
-        userId: user.id,
+        userId: user?.id || "",
         owner: ownerName,
       });
       if (result.success) {
@@ -159,6 +159,7 @@ const VehicleList = () => {
         <VehicleForm
           onSubmit={handleAddVehicle}
           onCancel={() => setIsAdding(false)}
+          owner={user?.fullName || user?.firstName || user?.username || ""}
         />
       </div>
     );
@@ -256,6 +257,20 @@ const VehicleList = () => {
                 </div>
               </Card>
             ))}
+            <Card
+              className="group flex flex-col items-center justify-center p-0 cursor-pointer border-2 border-dashed border-indigo-200 bg-gray-50 min-h-[320px] sm:min-h-[420px] w-full mx-0 relative font-sans opacity-70 hover:opacity-100 hover:shadow-xl transition-all"
+              onClick={() => setIsAdding(true)}
+              tabIndex={0}
+              role="button"
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setIsAdding(true); }}
+            >
+              <div className="w-full h-40 sm:h-56 md:h-64 lg:h-80 flex flex-col items-center justify-center rounded-t-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 sm:h-20 sm:w-20 text-indigo-300 mb-2 sm:mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="text-base sm:text-xl font-semibold text-indigo-400">Add New Vehicle</span>
+              </div>
+            </Card>
           </div>
         )}
       </div>

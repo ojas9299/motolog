@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react';
 import { Form, ShadcnFormField } from "../ui/Form";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
+import PropTypes from 'prop-types';
 
-const VehicleForm = ({ vehicle, onSubmit, onCancel, error }) => {
+const VehicleForm = ({ vehicle, onSubmit, onCancel, error, owner }) => {
   const [formData, setFormData] = useState({
     type: vehicle?.type || 'car',
     brand: vehicle?.brand || '',
@@ -44,6 +45,7 @@ const VehicleForm = ({ vehicle, onSubmit, onCancel, error }) => {
       registrationNumber: formData.registrationNumber.toUpperCase(),
       vehicleImages: vehicleImages.slice(0, 6),
       imageUrl: vehicleImages[0] || '', // for backward compatibility
+      ...(owner ? { owner } : {}),
     };
     Promise.resolve(onSubmit(dataToSend)).finally(() => setIsSubmitting(false));
   };
@@ -217,6 +219,14 @@ const VehicleForm = ({ vehicle, onSubmit, onCancel, error }) => {
       {isSubmitting && <span className="ml-2 text-blue-600">Submitting...</span>}
     </Form>
   );
+};
+
+VehicleForm.propTypes = {
+  vehicle: PropTypes.object,
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  owner: PropTypes.string,
 };
 
 export default VehicleForm; 
