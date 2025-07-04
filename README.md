@@ -1,6 +1,5 @@
 [![CI](https://github.com/oj9299/motolog/actions/workflows/ci.yml/badge.svg)](https://github.com/oj9299/motolog/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Vercel](https://vercelbadge.vercel.app/api/oj9299/motolog)](https://vercel.com/)
 
 # 🚗 Motolog - Vehicle Trip Logger & Analytics Platform
 
