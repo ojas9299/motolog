@@ -1,8 +1,6 @@
-[![CI](https://github.com/oj9299/motolog/actions/workflows/ci.yml/badge.svg)](https://github.com/oj9299/motolog/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Vercel](https://vercelbadge.vercel.app/api/oj9299/motolog)](https://vercel.com/)
 
 # 🚗 Motolog - Vehicle Trip Logger & Analytics Platform
+# https://motolog.online/
 
 Motolog is a modern, full-stack web application for logging, tracking, and analyzing vehicle trips, fuel usage, and ride sharing. It features a beautiful UI, real-time analytics, and leverages the latest in cloud and DevOps technologies for a seamless, scalable experience.
 
