@@ -28,9 +28,11 @@ const app = express();
 // connectDB();
 
 // Middleware
+const allowedOrigins = ["http://localhost:5173", "https://motolog.online"];
+
 app.use(
   cors({
-    origin: "https://motolog.vercel.app",
+    origin: allowedOrigins,
     credentials: true,
   })
 );

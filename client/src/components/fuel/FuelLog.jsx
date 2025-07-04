@@ -12,7 +12,7 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://16.171.137.112:5000/api/fuel/${vehicleId}?userId=${userId}`);
+      const res = await axios.get(`https://api.motolog.online/api/fuel/${vehicleId}?userId=${userId}`);
       setLogs(res.data);
     } catch (err) {
       console.error("❌ Error fetching logs", err);
@@ -29,7 +29,7 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
   const handleDelete = async (log) => {
     if (!window.confirm("Delete this fuel log?")) return;
     try {
-      await axios.delete(`http://16.171.137.112:5000/api/fuel/log/${log._id}`);
+      await axios.delete(`https://api.motolog.online/api/fuel/log/${log._id}`);
       setLocalRefresh((r) => r + 1);
     } catch (err) {
       alert("Failed to delete log");

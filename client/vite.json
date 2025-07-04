@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://16.171.137.112:5000/:path*"
+      "destination": "https://api.motolog.online/:path*"
     }
   ]
 }

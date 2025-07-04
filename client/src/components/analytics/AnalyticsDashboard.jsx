@@ -30,12 +30,12 @@ const AnalyticsDashboard = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const vehiclesRes = await axios.get(`http://16.171.137.112:5000/api/vehicle?userId=${user.id}`);
+        const vehiclesRes = await axios.get(`https://api.motolog.online/api/vehicle?userId=${user.id}`);
         setVehicles(vehiclesRes.data.vehicles || []);
         // Fetch all fuel logs for all vehicles
         const allLogs = [];
         for (const v of vehiclesRes.data.vehicles) {
-          const logsRes = await axios.get(`http://16.171.137.112:5000/api/fuel/${v._id}?userId=${user.id}`);
+          const logsRes = await axios.get(`https://api.motolog.online/api/fuel/${v._id}?userId=${user.id}`);
           allLogs.push(...(logsRes.data || []).map(log => ({ ...log, vehicle: v })));
         }
         setFuelLogs(allLogs);

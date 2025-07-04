@@ -84,7 +84,7 @@ const TripForm = ({ vehicles, onSubmit, onCancel, editTrip }) => {
     setTripUploading(true);
     setTripUploadError(null);
     try {
-      const res = await fetch(`http://16.171.137.112:5000/api/generate-upload-url?name=${encodeURIComponent(file.name)}&type=${encodeURIComponent(file.type)}`);
+      const res = await fetch(`https://api.motolog.online/api/generate-upload-url?name=${encodeURIComponent(file.name)}&type=${encodeURIComponent(file.type)}`);
       if (!res.ok) throw new Error('Failed to get upload URL');
       const { url, publicUrl } = await res.json();
       const uploadRes = await fetch(url, {

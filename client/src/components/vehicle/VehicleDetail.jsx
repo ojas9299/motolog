@@ -67,7 +67,7 @@ const VehicleDetail = () => {
     const fetchVehicle = async () => {
       setVehicleLoading(true);
       try {
-        const res = await axios.get(`http://16.171.137.112:5000/api/vehicle/${vehicleId}`);
+        const res = await axios.get(`https://api.motolog.online/api/vehicle/${vehicleId}`);
         setVehicle(res.data);
       } catch (err) {
         setVehicle(null);
@@ -94,7 +94,7 @@ const VehicleDetail = () => {
           setVerified(isVerified);
           // If verified, update backend
           if (isVerified) {
-            await axios.put(`http://16.171.137.112:5000/api/vehicle/${vehicle._id}`, { ...vehicle, verified: true });
+            await axios.put(`https://api.motolog.online/api/vehicle/${vehicle._id}`, { ...vehicle, verified: true });
           }
         }
       }
@@ -109,7 +109,7 @@ const VehicleDetail = () => {
     const fetchTrips = async () => {
       setTripsLoading(true);
       try {
-        const res = await axios.get(`http://16.171.137.112:5000/api/trip?userId=${user.id}&vehicleId=${vehicleId}`);
+        const res = await axios.get(`https://api.motolog.online/api/trip?userId=${user.id}&vehicleId=${vehicleId}`);
         setTrips(res.data.trips || []);
       } catch (err) {
         setTrips([]);
@@ -125,7 +125,7 @@ const VehicleDetail = () => {
     const fetchFuelLogs = async () => {
       setFuelLoading(true);
       try {
-        const res = await axios.get(`http://16.171.137.112:5000/api/fuel/${vehicleId}?userId=${user?.id}`);
+        const res = await axios.get(`https://api.motolog.online/api/fuel/${vehicleId}?userId=${user?.id}`);
         setFuelLogs(res.data);
       } catch (err) {
         setFuelLogs([]);

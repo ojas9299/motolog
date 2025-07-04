@@ -12,7 +12,7 @@ export const useFuel = (vehicleId) => {
     const fetchLogs = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://16.171.137.112:5000/api/fuel/${vehicleId}`, {
+        const res = await axios.get(`https://api.motolog.online/api/fuel/${vehicleId}`, {
           params: { userId: user?.id }, // 🔥 Manually pass userId here
         });
         setLogs(res.data);

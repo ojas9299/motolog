@@ -9,7 +9,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://16.171.137.112:5000",
+        target: "https://api.motolog.online",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

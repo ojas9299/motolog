@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://16.171.137.112:5000/api';
+const API_BASE_URL = 'https://api.motolog.online/api';
 
 /**
  * Generic API request function
