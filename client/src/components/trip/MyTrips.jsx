@@ -37,10 +37,11 @@ const MyTrips = ({ activeTab }) => {
         showError("Please select a valid vehicle.");
         return;
       }
+      const owner = user.emailAddresses?.[0]?.emailAddress || "Unknown";
       const enrichedTripData = {
         ...tripData,
         userId: user.id,
-        owner: user.fullName || user.firstName || user.username || "",
+        owner,
         brand: vehicle?.brand,
         model: vehicle?.model,
         color: vehicle?.color,
