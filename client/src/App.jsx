@@ -14,7 +14,7 @@ import {
   useParams,
   useLocation,
 } from "react-router-dom";
-import * as Tooltip from '@radix-ui/react-tooltip';
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 // Components & Pages
 import Sidebar from "./components/Sidebar";
@@ -35,7 +35,7 @@ const FuelFormWrapper = () => {
   const { vehicleId } = useParams();
 
   const handleLogSaved = () => {
-    console.log("✅ Fuel log saved!");
+    console.log("✅ Fuel log saved!!");
     // You can also navigate after this or show a toast
   };
 
@@ -79,10 +79,14 @@ export default function App() {
 
   return (
     <Tooltip.Provider>
-      
-      <> 
+      <>
         {(location.pathname !== "/" || user) && (
-          <Navbar activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} setDarkMode={setDarkMode} />
+          <Navbar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+          />
         )}
         <div className="flex flex-col min-h-screen">
           <div className="flex-1">
@@ -93,7 +97,10 @@ export default function App() {
                 element={
                   <>
                     <SignedIn>
-                      <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                      <Sidebar
+                        setActiveTab={setActiveTab}
+                        activeTab={activeTab}
+                      >
                         <MyVehicles activeTab={activeTab} />
                         <MyTrips activeTab={activeTab} />
                         <MyFuel activeTab={activeTab} />
@@ -115,22 +122,31 @@ export default function App() {
                 }
               />
               {/* Analytics Route */}
-              <Route path="/analytics" element={
-                <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-                  <AnalyticsDashboard />
-                </Sidebar>
-              } />
+              <Route
+                path="/analytics"
+                element={
+                  <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                    <AnalyticsDashboard />
+                  </Sidebar>
+                }
+              />
               {/* Fuel Routes */}
-              <Route path="/fuel-log/new/:vehicleId" element={<FuelFormWrapper />} />
+              <Route
+                path="/fuel-log/new/:vehicleId"
+                element={<FuelFormWrapper />}
+              />
               <Route path="/fuel-log/view/:vehicleId" element={<FuelLog />} />
               {/* Vehicle Routes */}
               <Route path="/vehicle/:vehicleId" element={<VehicleDetail />} />
               {/* Rideboard Route */}
-              <Route path="/rideboard" element={
-                <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
-                  <RideboardList />
-                </Sidebar>
-              } />
+              <Route
+                path="/rideboard"
+                element={
+                  <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                    <RideboardList />
+                  </Sidebar>
+                }
+              />
             </Routes>
           </div>
           <Footer />
