@@ -12,7 +12,9 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`https://api.motolog.online/api/fuel/${vehicleId}?userId=${userId}`);
+      const res = await axios.get(
+        `https://api.motolog.online/api/fuel/${vehicleId}?userId=${userId}`
+      );
       setLogs(res.data);
     } catch (err) {
       console.error("❌ Error fetching logs", err);
@@ -23,7 +25,6 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
 
   useEffect(() => {
     if (vehicleId && userId) fetchLogs();
-     
   }, [vehicleId, userId, refreshKey, localRefresh]);
 
   const handleDelete = async (log) => {
@@ -45,7 +46,7 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
     setLocalRefresh((r) => r + 1);
   };
 
-  if (loading) return <p className="p-4">Loading fuel logs...</p>;
+  if (loading) return <p className="p-4">Loading fuel logs..</p>;
 
   return (
     <div>
