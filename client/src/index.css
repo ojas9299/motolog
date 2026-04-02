@@ -35,3 +35,40 @@ html, body, * {
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* ========== HUD / Telemetry Glass Utilities ========== */
+.glass-card {
+  background: rgba(11, 19, 38, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.hud-gradient-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);
+}
+
+.hud-gradient-secondary {
+  background: linear-gradient(135deg, #00a572 0%, #065f46 100%);
+}
+
+.hud-gradient-tertiary {
+  background: linear-gradient(135deg, #a500bd 0%, #581c87 100%);
+}
+
+.hud-glow-indigo {
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.15);
+}
+
+.hud-glow-emerald {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.hud-glow-pink {
+  box-shadow: 0 0 20px rgba(165, 0, 189, 0.15);
+}
+
+.hud-glow-error {
+  box-shadow: 0 0 20px rgba(255, 180, 171, 0.15);
+}
+
