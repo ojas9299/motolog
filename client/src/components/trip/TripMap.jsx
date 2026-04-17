@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Spinner from '../ui/Spinner';
 
 const TripMap = ({ trip, onClose }) => {
   const [coordinates, setCoordinates] = useState(null);
@@ -98,7 +99,7 @@ const TripMap = ({ trip, onClose }) => {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+            <div className="flex justify-center mb-4"><Spinner /></div>
             <p className="text-gray-600">Loading map...</p>
           </div>
         </div>

@@ -5,6 +5,7 @@ import FuelLog from "./FuelLog";
 import { useVehicles } from "../../hooks/useVehicles";
 import { Fuel as FuelIcon, ListPlus, Eye, EyeOff } from 'lucide-react';
 import { Button } from '../ui/Button';
+import Spinner from '../ui/Spinner';
 
 const MyFuel = ({ activeTab }) => {
   const { user } = useUser();
@@ -28,7 +29,7 @@ const MyFuel = ({ activeTab }) => {
       <h2 className="text-3xl font-extrabold text-indigo-700 mb-6">My Fuel Logs</h2>
       <h2 className="text-xl font-semibold mb-4 dark:text-white">Fuel Tracker</h2>
       {loading ? (
-        <p>Loading vehicles...</p>
+        <div className="flex justify-center p-8"><Spinner /></div>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : vehicles.length === 0 ? (

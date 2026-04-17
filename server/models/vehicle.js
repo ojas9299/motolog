@@ -31,6 +31,8 @@ const vehicleSchema = new mongoose.Schema(
     userId: { type: String, required: true }, // Clerk/Firebase UID, required
     owner: { type: String, required: true }, // Owner's name (Clerk user's name)
     verified: { type: Boolean, default: false }, // Permanently store verification status
+    serviceInterval: { type: Number, default: 5000 },
+    lastServiceOdo: { type: Number },
   },
   { timestamps: true }
 );

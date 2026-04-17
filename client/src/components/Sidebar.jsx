@@ -5,7 +5,7 @@ import { LogOut } from "lucide-react";
 
 // Icons based on the user's template using Material Symbols or lucide
 // Since lucide is already in project, we'll map icons close to the reference.
-import { Car, Route, Fuel, Globe, BarChart2 } from 'lucide-react';
+import { Car, Route, Fuel, Globe, BarChart2, Wallet } from 'lucide-react';
 
 const Sidebar = ({ setActiveTab, activeTab, children }) => {
   const { user } = useUser();
@@ -13,6 +13,7 @@ const Sidebar = ({ setActiveTab, activeTab, children }) => {
     { key: "vehicles", label: "Vehicles", icon: <Car size={18} /> },
     { key: "trips", label: "My Trips", icon: <Route size={18} /> },
     { key: "fuel", label: "Fuel Log", icon: <Fuel size={18} /> },
+    { key: "maintenance", label: "Wallet", icon: <Wallet size={18} /> },
     { key: "rideboard", label: "Rideboard", icon: <Globe size={18} /> },
     { key: "analytics", label: "Analytics", icon: <BarChart2 size={18} /> },
   ];
@@ -36,6 +37,7 @@ const Sidebar = ({ setActiveTab, activeTab, children }) => {
                 onClick={() => {
                   setActiveTab(tab.key);
                   if (tab.key === "rideboard") navigate("/rideboard");
+                  else if (tab.key === "maintenance") navigate("/maintenance");
                   else if (tab.key === "vehicles") navigate("/vehicles");
                   else if (tab.key === "fuel") navigate("/");
                   else if (tab.key === "trips") navigate("/");

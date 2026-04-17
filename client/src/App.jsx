@@ -23,6 +23,7 @@ import MyTrips from "./components/trip/MyTrips";
 import MyFuel from "./components/fuel/MyFuel";
 import FuelForm from "./components/fuel/FuelForm";
 import FuelLog from "./components/fuel/FuelLog";
+import MyMaintenance from "./components/maintenance/MyMaintenance";
 import VehicleDetail from "./components/vehicle/VehicleDetail";
 import Navbar from "./components/ui/Navbar";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
@@ -104,6 +105,7 @@ export default function App() {
                         <MyVehicles activeTab={activeTab} />
                         <MyTrips activeTab={activeTab} />
                         <MyFuel activeTab={activeTab} />
+                        <MyMaintenance activeTab={activeTab} />
                       </Sidebar>
                     </SignedIn>
                     <SignedOut>
@@ -118,6 +120,15 @@ export default function App() {
                 element={
                   <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
                     <MyVehicles activeTab="vehicles" />
+                  </Sidebar>
+                }
+              />
+              {/* Maintenance Route */}
+              <Route
+                path="/maintenance"
+                element={
+                  <Sidebar setActiveTab={setActiveTab} activeTab={activeTab}>
+                    <MyMaintenance activeTab="maintenance" />
                   </Sidebar>
                 }
               />

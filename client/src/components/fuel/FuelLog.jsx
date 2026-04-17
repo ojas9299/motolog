@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import FuelLogList from "./FuelLogList";
 import FuelForm from "./FuelForm";
+import Spinner from "../ui/Spinner";
 
 const FuelLog = ({ vehicleId, userId, refreshKey }) => {
   const [logs, setLogs] = useState([]);
@@ -46,7 +47,7 @@ const FuelLog = ({ vehicleId, userId, refreshKey }) => {
     setLocalRefresh((r) => r + 1);
   };
 
-  if (loading) return <p className="p-4">Loading fuel logs..</p>;
+  if (loading) return <div className="flex justify-center p-4"><Spinner /></div>;
 
   return (
     <div>
