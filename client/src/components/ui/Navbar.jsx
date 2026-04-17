@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserButton } from "@clerk/clerk-react";
-import { Car, Route, Fuel, Menu, Globe, BarChart2, Sun, Moon } from 'lucide-react';
+import { Car, Route, Fuel, Menu, Globe, BarChart2 } from 'lucide-react';
 
 const NAV_LINKS = [
   { name: "Vehicles", tab: "vehicles", icon: <Car size={18} className="mr-1" /> },
@@ -81,13 +81,6 @@ const Navbar = ({ activeTab, setActiveTab, darkMode, setDarkMode }) => {
       <div className="hidden md:flex items-center gap-4"></div>
       {/* Always show dark mode and profile on right, even on mobile */}
       <div className="flex items-center gap-2 md:gap-4 ml-auto">
-        <button
-          onClick={() => setDarkMode((d) => !d)}
-          className="text-xl px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition"
-          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        >
-          {darkMode ? <Moon /> : <Sun />}
-        </button>
         <div>
           <UserButton afterSignOutUrl="/" />
         </div>

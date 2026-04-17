@@ -12,6 +12,7 @@ const fuelRoutes = require("./routes/fuel");
 const uploadRoutes = require("./routes/upload");
 const rideboardRoutes = require("./routes/rideboard/rideboard");
 const maintenanceRoutes = require("./routes/maintenance");
+const analyticsRoutes = require("./routes/analytics");
 
 // Load environment variables
 dotenv.config();
@@ -51,6 +52,7 @@ app.use("/api/vehicle", vehicleRoutes);
 app.use("/api/trip", tripRoutes);
 app.use("/api/fuel", fuelRoutes);
 app.use("/api/maintenance", maintenanceRoutes);
+app.use("/api/analytics", analyticsRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api/rideboard", rideboardRoutes);
 // Health check route

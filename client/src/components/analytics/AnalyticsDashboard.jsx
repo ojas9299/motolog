@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { Bar, Line } from "react-chartjs-2";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 import ReactECharts from "echarts-for-react";
 import Spinner from "../ui/Spinner";
 import { motion } from "framer-motion";
@@ -134,6 +134,8 @@ const AnalyticsDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedVehicle, setSelectedVehicle] = useState("all");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [costData, setCostData] = useState(null);
+  const [costLoading, setCostLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -156,6 +158,39 @@ const AnalyticsDashboard = () => {
     };
     if (user?.id) fetchData();
   }, [user]);
+
+  useEffect(() => {
+    const fetchCostData = async () => {
+      setCostLoading(true);
+      try {
+        if (selectedVehicle === "all") {
+          let tDist = 0, tFuel = 0, tMaint = 0, tCost = 0;
+          for (const v of vehicles) {
+            const res = await axios.get(`https://api.motolog.online/api/analytics/cost-intelligence/${v._id}`);
+            tDist += res.data.totalDistance || 0;
+            tFuel += res.data.totalFuelCost || 0;
+            tMaint += res.data.totalMaintenanceCost || 0;
+            tCost += res.data.totalCost || 0;
+          }
+          setCostData({
+            totalDistance: tDist,
+            totalFuelCost: tFuel,
+            totalMaintenanceCost: tMaint,
+            totalCost: tCost,
+            costPerKm: tDist > 0 ? (tCost / tDist) : 0
+          });
+        } else {
+          const res = await axios.get(`https://api.motolog.online/api/analytics/cost-intelligence/${selectedVehicle}`);
+          setCostData(res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching cost intelligence:", err);
+      } finally {
+        setCostLoading(false);
+      }
+    };
+    if (vehicles.length > 0) fetchCostData();
+  }, [selectedVehicle, vehicles]);
 
   // ─── Derived data ───
   const filteredLogs = useMemo(() =>
@@ -499,6 +534,56 @@ const AnalyticsDashboard = () => {
               </ChartCard>
             )}
           </div>
+
+          {/* ─── Cost Intelligence Section ─── */}
+          {(costData || costLoading) && (
+            <div className="mt-12">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-2xl font-headline font-bold text-hud-on-surface">Cost Intelligence</h3>
+                  <p className="text-slate-500 font-body text-sm">Comprehensive expense tracking and per-km analytics</p>
+                </div>
+                {costLoading && (
+                  <div className="scale-75 origin-right"><Spinner size="sm" /></div>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Cost Breakdown Pie Chart */}
+                <ChartCard title="Expense Breakdown" subtitle="Fuel vs Maintenance" delay={0.5}>
+                  <div className="h-[240px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Fuel', value: costData?.totalFuelCost || 0 },
+                            { name: 'Maintenance', value: costData?.totalMaintenanceCost || 0 }
+                          ]}
+                          cx="50%" cy="50%" innerRadius={60} outerRadius={84} paddingAngle={5} dataKey="value" stroke="none"
+                        >
+                          <Cell fill="#4f46e5" />
+                          <Cell fill="#f59e0b" />
+                        </Pie>
+                        <Tooltip content={<HudTooltip />} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex justify-center gap-6 mt-2 pb-2">
+                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-indigo-600"></div><span className="text-xs text-slate-300 font-label uppercase tracking-wider">Fuel</span></div>
+                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-xs text-slate-300 font-label uppercase tracking-wider">Maintenance</span></div>
+                  </div>
+                </ChartCard>
+
+                {/* Summary Cards */}
+                <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                   <StatCard icon={Wallet} label="Total Cost" value={costData?.totalCost > 0 ? `₹${formatNumber(Math.round(costData.totalCost))}` : "—"} unit="" borderColorClass="border-emerald-500" glowClass="hud-glow-emerald" iconColorClass="text-emerald-400" unitColorClass="text-emerald-400" />
+                   <StatCard icon={Gauge} label="Cost per KM" value={costData?.costPerKm > 0 ? `₹${costData.costPerKm.toFixed(2)}` : "—"} unit="/ km" borderColorClass="border-indigo-500" glowClass="hud-glow-indigo" iconColorClass="text-indigo-400" unitColorClass="text-indigo-400" />
+                   <StatCard icon={Zap} label="Fuel Expense" value={costData?.totalFuelCost > 0 ? `₹${formatNumber(Math.round(costData.totalFuelCost))}` : "—"} unit="" borderColorClass="border-blue-500" glowClass="hud-glow-blue" iconColorClass="text-blue-400" unitColorClass="text-blue-400" />
+                   <StatCard icon={Leaf} label="Maint. Expense" value={costData?.totalMaintenanceCost > 0 ? `₹${formatNumber(Math.round(costData.totalMaintenanceCost))}` : "—"} unit="" borderColorClass="border-orange-500" glowClass="hud-glow-orange" iconColorClass="text-orange-400" unitColorClass="text-orange-400" />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* ─── Bottom Stats Row ─── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-2">
