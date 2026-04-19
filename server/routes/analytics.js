@@ -64,4 +64,52 @@ router.get('/cost-intelligence/:vehicleId', async (req, res) => {
   }
 });
 
+// @route   GET /api/analytics/carbon-footprint/:vehicleId
+// @desc    Get carbon footprint data for a vehicle
+// @access  Public
+router.get('/carbon-footprint/:vehicleId', async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+
+    // 1. Fetch all trips for the vehicle
+    const trips = await Trip.find({ vehicleId });
+    
+    let totalDistance = 0;
+    let totalFuelUsed = 0;
+
+    const AVG_KMPL = 35;
+    const FUEL_PRICE = 100;
+    
+    trips.forEach(trip => {
+      if (trip.calculatedDistance) {
+        totalDistance += trip.calculatedDistance;
+      }
+      if (trip.fuelConsumed) {
+        totalFuelUsed += trip.fuelConsumed;
+      } else if (trip.fuelCost) {
+        totalFuelUsed += (trip.fuelCost / FUEL_PRICE);
+      }
+    });
+
+    if (totalFuelUsed === 0 && totalDistance > 0) {
+       totalFuelUsed = totalDistance / AVG_KMPL;
+    }
+
+    // Default to Petrol emission factor (2.31 kg CO₂ per liter)
+    const emissionFactor = 2.31;
+    const totalCO2 = totalFuelUsed * emissionFactor;
+    const averageCO2PerKm = totalDistance > 0 ? (totalCO2 / totalDistance) : 0;
+
+    res.json({
+      totalFuelUsed,
+      totalCO2,
+      averageCO2PerKm
+    });
+
+  } catch (error) {
+    console.error('Error fetching carbon footprint:', error);
+    res.status(500).json({ error: 'Server error calculating carbon footprint' });
+  }
+});
+
 module.exports = router;

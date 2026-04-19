@@ -13,6 +13,8 @@ import {
   Wallet,
   Gauge,
   Leaf,
+  Cloud,
+  Droplet,
 } from "lucide-react";
 
 // Chart.js registration
@@ -136,6 +138,8 @@ const AnalyticsDashboard = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [costData, setCostData] = useState(null);
   const [costLoading, setCostLoading] = useState(false);
+  const [carbonData, setCarbonData] = useState(null);
+  const [carbonLoading, setCarbonLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -190,6 +194,39 @@ const AnalyticsDashboard = () => {
       }
     };
     if (vehicles.length > 0) fetchCostData();
+  }, [selectedVehicle, vehicles]);
+
+  useEffect(() => {
+    const fetchCarbonData = async () => {
+      setCarbonLoading(true);
+      try {
+        if (selectedVehicle === "all") {
+          let tFuel = 0, tCO2 = 0, tAvgCO2 = 0, validVehicles = 0;
+          for (const v of vehicles) {
+            const res = await axios.get(`https://api.motolog.online/api/analytics/carbon-footprint/${v._id}`);
+            tFuel += res.data.totalFuelUsed || 0;
+            tCO2 += res.data.totalCO2 || 0;
+            if (res.data.averageCO2PerKm > 0) {
+               tAvgCO2 += res.data.averageCO2PerKm;
+               validVehicles++;
+            }
+          }
+          setCarbonData({
+            totalFuelUsed: tFuel,
+            totalCO2: tCO2,
+            averageCO2PerKm: validVehicles > 0 ? (tAvgCO2 / validVehicles) : 0
+          });
+        } else {
+          const res = await axios.get(`https://api.motolog.online/api/analytics/carbon-footprint/${selectedVehicle}`);
+          setCarbonData(res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching carbon footprint data:", err);
+      } finally {
+        setCarbonLoading(false);
+      }
+    };
+    if (vehicles.length > 0) fetchCarbonData();
   }, [selectedVehicle, vehicles]);
 
   // ─── Derived data ───
@@ -350,6 +387,14 @@ const AnalyticsDashboard = () => {
         const v = vehicles.find(v => v._id === selectedVehicle);
         return v ? `${v.brand} ${v.model}` : "Select Vehicle";
       })();
+
+  const badgeProps = (() => {
+    const avg = carbonData?.averageCO2PerKm || 0;
+    if (avg === 0) return { label: "No Data", icon: "—", color: "text-slate-400 bg-slate-400/10 border-slate-400/20" };
+    if (avg < 0.1) return { label: "Low Emission", icon: "🌱", color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" };
+    if (avg < 0.15) return { label: "Medium", icon: "⚖️", color: "text-amber-400 bg-amber-400/10 border-amber-400/20" };
+    return { label: "High", icon: "🚨", color: "text-red-400 bg-red-400/10 border-red-400/20" };
+  })();
 
   // ─── RENDER ───
   if (!user) return <p className="text-center py-10 text-lg text-slate-400">Please sign in to view analytics.</p>;
@@ -580,6 +625,40 @@ const AnalyticsDashboard = () => {
                    <StatCard icon={Gauge} label="Cost per KM" value={costData?.costPerKm > 0 ? `₹${costData.costPerKm.toFixed(2)}` : "—"} unit="/ km" borderColorClass="border-indigo-500" glowClass="hud-glow-indigo" iconColorClass="text-indigo-400" unitColorClass="text-indigo-400" />
                    <StatCard icon={Zap} label="Fuel Expense" value={costData?.totalFuelCost > 0 ? `₹${formatNumber(Math.round(costData.totalFuelCost))}` : "—"} unit="" borderColorClass="border-blue-500" glowClass="hud-glow-blue" iconColorClass="text-blue-400" unitColorClass="text-blue-400" />
                    <StatCard icon={Leaf} label="Maint. Expense" value={costData?.totalMaintenanceCost > 0 ? `₹${formatNumber(Math.round(costData.totalMaintenanceCost))}` : "—"} unit="" borderColorClass="border-orange-500" glowClass="hud-glow-orange" iconColorClass="text-orange-400" unitColorClass="text-orange-400" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ─── Carbon Footprint Tracker Section ─── */}
+          {(carbonData || carbonLoading) && (
+            <div className="mt-12">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-2xl font-headline font-bold text-hud-on-surface">Carbon Footprint Tracker</h3>
+                  <p className="text-slate-500 font-body text-sm">Monitor and calculate CO₂ emissions from vehicle usage</p>
+                </div>
+                {carbonLoading && (
+                  <div className="scale-75 origin-right"><Spinner size="sm" /></div>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="lg:col-span-1 glass-card rounded-2xl p-6 flex flex-col justify-center items-center gap-4 text-center border-emerald-500/20 hover:border-emerald-500/40 transition-all">
+                   <h4 className="text-sm font-headline text-slate-400 uppercase tracking-widest">Emission Status</h4>
+                   <div className={`px-4 py-2 rounded-full border flex items-center gap-2 text-lg font-bold font-headline ${badgeProps.color}`}>
+                     <span>{badgeProps.label}</span>
+                     <span>{badgeProps.icon}</span>
+                   </div>
+                   {carbonData?.averageCO2PerKm > 0 && (
+                     <p className="text-xs text-slate-500 font-body">Based on average CO₂ per kilometer</p>
+                   )}
+                </div>
+
+                <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                   <StatCard icon={Cloud} label="Total CO₂ Emitted" value={carbonData?.totalCO2 > 0 ? carbonData.totalCO2.toFixed(1) : "—"} unit="kg" borderColorClass="border-red-400" glowClass="hud-glow-error" iconColorClass="text-red-400" unitColorClass="text-red-400" />
+                   <StatCard icon={Leaf} label="Avg CO₂ per KM" value={carbonData?.averageCO2PerKm > 0 ? carbonData.averageCO2PerKm.toFixed(3) : "—"} unit="kg/km" borderColorClass="border-emerald-500" glowClass="hud-glow-emerald" iconColorClass="text-emerald-400" unitColorClass="text-emerald-400" />
+                   <StatCard icon={Droplet} label="Total Fuel Used" value={carbonData?.totalFuelUsed > 0 ? carbonData.totalFuelUsed.toFixed(1) : "—"} unit="L" borderColorClass="border-blue-500" glowClass="hud-glow-blue" iconColorClass="text-blue-400" unitColorClass="text-blue-400" />
                 </div>
               </div>
             </div>
